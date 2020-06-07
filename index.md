@@ -139,7 +139,7 @@
       <br>
       <b>Der Shipment-Service reagiert daraufhin ebenfalls. Er fragt die Artikel und die dazugehörigen Mengen vom Order-Service mit der orderID ab. Außerdem holt er sich die customerID der Bestellung und fragt damit den Namen und die Adresse des Kunden beim Customer-Service ab. Anschließend schickt er eine Versandbestätigung an den Kunden und publisht die orderID.</b>
       <br>
-      Daraufhin setzt der Order-Service isSent auf true.</b>
+      <b>Daraufhin setzt der Order-Service isSent auf true.</b>
       <br>
       <img src="img/TA1.png" alt="first image"/>
       <br>
