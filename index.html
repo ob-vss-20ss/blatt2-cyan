@@ -65,6 +65,60 @@
          <li>Order (synchron)</li>
       </ul>
       <br>
+      <b>Order</b>
+      <br>
+      <p><i>Daten: </i>orderID, customerID, Liste von articleID und dazugehörigen Mengen, isPayed (bool), isSent(bool)</p>
+      <br>
+      <i>Funktionalität:</i>
+      <ul type="circle">
+         <li>Bestellung aufgeben</li>
+         <li>defekte Artikel zurückschicken</li>
+         <li>Bestellung stornieren (falls noch nicht versandt)</li>
+      </ul>
+      <br>
+      <i>Kommunikation mit:</i>
+      <ul type="circle">
+         <li>Client (synchron)</li>
+         <li>Catalog (synchron)</li>
+         <li>Stock (synchron)</li>
+         <li>Payment (asynchron, Empfänger)</li>
+         <li>Shipment (asynchron, Empfänger)</li>
+      </ul>
+      <br>
+      <b>Payment</b>
+      <br>
+      <p><i>Daten: </i>-</p>
+      <br>
+      <i>Funktionalität:</i>
+      <ul type="circle">
+         <li>Bestellung bezahlen</li>
+      </ul>
+      <br>
+      <i>Kommunikation mit:</i>
+      <ul type="circle">
+         <li>Client (synchron)</li>
+         <li>Shipment (asynchron, Sender)</li>
+         <li>Order (asynchron, Sender)</li>
+      </ul>
+      <br>
+      <b>Shipment</b>
+      <br>
+      <p><i>Daten: </i>-</p>
+      <br>
+      <i>Funktionalität:</i>
+      <ul type="circle">
+         <li>Bestellung versenden</li>
+      </ul>
+      <br>
+      <i>Kommunikation mit:</i>
+      <ul type="circle">
+         <li>Client (synchron)</li>
+         <li>Order (synchron)</li>
+         <li>Customer (synchron)</li>
+         <li>Order (asynchron, Sender)</li>
+         <li>Payment (asynchron, Empfänger)</li>
+      </ul>
+      <br>
       <img src="img/TA1.png" alt="first image"/>
       <br>
       <br>
