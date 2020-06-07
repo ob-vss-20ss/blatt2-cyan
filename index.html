@@ -11,7 +11,7 @@
       <br>
       <b>Customer</b>
       <br>
-      <p><i>Daten: </i>customerID, name, adresse</p>
+      <p><i>Daten: </i>customerID, name, address</p>
       <br>
       <i>Funktionalität:</i>
       <ul type="circle">
@@ -43,6 +43,25 @@
       <ul type="circle">
          <li>Client (synchron)</li>
          <li>Stock (synchron)</li>
+         <li>Order (synchron)</li>
+      </ul>
+      <br>
+      <b>Stock</b>
+      <br>
+      <p><i>Daten: </i>articleID, amount</p>
+      <br>
+      <i>Funktionalität:</i>
+      <ul type="circle">
+         <li>Artikel mit Bestand hinzufügen</li>
+         <li>Bestand eines einzelnen Artikels zurückgeben</li>
+         <li>Bestand eines Artikels erhöhen/reduzieren</li>
+         <li>alle Artikel und Bestände auflisten</li>
+      </ul>
+      <br>
+      <i>Kommunikation mit:</i>
+      <ul type="circle">
+         <li>Client (synchron)</li>
+         <li>Catalog (synchron)</li>
          <li>Order (synchron)</li>
       </ul>
       <br>
