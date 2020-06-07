@@ -64,4 +64,4 @@ wird dennoch fehlschlagen, weil noch kein Go-File vorhanden ist.
 Erzeugen Sie **JETZT** den `develop`-Branch und beginnen Sie mit der eigentlichen
 Arbeit. Ab jetzt ist der `master`-Branch für Sie tabu!
 
-Orientieren Sie sich gerne an <https://github.com/vesose/example-micro>.
+Orientieren Sie sich gerne an <https://github.com/vesose/example-micro>...
