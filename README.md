@@ -3,7 +3,16 @@
 
 ### Customer
 
-**Daten:** customerID, name, adresse
+*Daten:* customerID, name, address
+
+*Funktionalität:*
+*neuen Kunden anlegen
+*Kunden finden
+*Kunden löschen
+
+*Kommunikation mit:* 
+*Client (synchron)
+*Shipment(synchron)
 
 ![image info](./img/TA1.png)
 
