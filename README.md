@@ -4,6 +4,8 @@ Führen Sie das Folgende zunächst noch im `master`-Branch aus.
 
 ## Customer
 
+[[img src=img/TA1.png]]
+
 Diesen Schritt muss nur einer aus dem Team durchführen.
 
 1. Loggen Sie sich auf meinem [Drone-Server](https://terraform.cs.hm.edu/) ein.
