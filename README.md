@@ -1,8 +1,8 @@
-# Startercode für VSS Blatt 2
+# Teilaufgabe 1
 
 Führen Sie das Folgende zunächst noch im `master`-Branch aus.
 
-## Drone CI auf [Terraform.cs.hm.edu](https://terraform.cs.hm.edu/) vorbereiten
+## Customer
 
 Diesen Schritt muss nur einer aus dem Team durchführen.
 
