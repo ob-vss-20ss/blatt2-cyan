@@ -1,8 +1,9 @@
 # Teilaufgabe 1
 
-Führen Sie das Folgende zunächst noch im `master`-Branch aus.
 
-## Customer
+### Customer
+
+**Daten:** customerID, name, adresse
 
 ![image info](./img/TA1.png)
 
