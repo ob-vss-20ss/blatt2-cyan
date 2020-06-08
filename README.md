@@ -93,6 +93,7 @@
 * Payment (asynchron, Empfänger)
 
 
+
 ## Ablauf einer Bestellung eines nicht registrierten Kunden:
 
 Der Client fragt zunächst alle Artikel ab, die auf Lager sind. Dazu wird eine Nachricht an den Catalog-Service geschickt. Da der Catalog-Service nicht weiß, welche Artikel auf Lager sind, muss er eine Nachricht an den Stock-Service schicken. Dieser Antwortet mit einer Auflistung aller Artikel, die auf Lager sind. Der Catalog-Service schickt die entsprechenden Artikel dann an den Client.
