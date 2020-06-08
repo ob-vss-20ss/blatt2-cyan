@@ -4,7 +4,7 @@ Führen Sie das Folgende zunächst noch im `master`-Branch aus.
 
 ## Customer
 
-[[img src=img/TA1.png]]
+![image info](./img/TA1.png)
 
 Diesen Schritt muss nur einer aus dem Team durchführen.
 
