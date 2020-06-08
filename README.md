@@ -108,8 +108,10 @@ Daraufhin setzt der Order-Service isSent auf true.
 
 
 ![image info](./img/TA1.png)
+
 Bild 1. Ablauf vor dem Registrieren
 
 ![image info](./img/TA2.png)
+
 Bild 2. Ablauf nach dem Registrieren
 
