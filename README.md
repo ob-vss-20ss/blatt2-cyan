@@ -93,7 +93,6 @@
 * Payment (asynchron, Empfänger)
 
 
-
 ## Ablauf einer Bestellung eines nicht registrierten Kunden:
 
 Der Client fragt zunächst alle Artikel ab, die auf Lager sind. Dazu wird eine Nachricht an den Catalog-Service geschickt. Da der Catalog-Service nicht weiß, welche Artikel auf Lager sind, muss er eine Nachricht an den Stock-Service schicken. Dieser Antwortet mit einer Auflistung aller Artikel, die auf Lager sind. Der Catalog-Service schickt die entsprechenden Artikel dann an den Client.
@@ -115,7 +114,6 @@ Daraufhin setzt der Order-Service isPayed bei der entsprechenden Bestellung auf 
 Der Shipment-Service reagiert daraufhin ebenfalls. Er fragt die Artikel und die dazugehörigen Mengen vom Order-Service mit der orderID ab. Außerdem holt er sich die customerID der Bestellung und fragt damit den Namen und die Adresse des Kunden beim Customer-Service ab. Anschließend schickt er eine Versandbestätigung an den Kunden und publisht die orderID.
 
 Daraufhin setzt der Order-Service isSent auf true.
-
 
 
 ![image info](./img/TA1.png)
