@@ -6,13 +6,13 @@
 *Daten:* customerID, name, address
 
 *Funktionalität:*
-*neuen Kunden anlegen
-*Kunden finden
-*Kunden löschen
+* neuen Kunden anlegen
+* Kunden finden
+* Kunden löschen
 
 *Kommunikation mit:* 
-*Client (synchron)
-*Shipment(synchron)
+* Client (synchron)
+* Shipment(synchron)
 
 ![image info](./img/TA1.png)
 
