@@ -6,6 +6,8 @@ Führen Sie das Folgende zunächst noch im `master`-Branch aus.
 
 ![image info](./img/TA1.png)
 
+![image info](./img/TA2.png)
+
 Diesen Schritt muss nur einer aus dem Team durchführen.
 
 1. Loggen Sie sich auf meinem [Drone-Server](https://terraform.cs.hm.edu/) ein.
