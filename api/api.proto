@@ -1,3 +1,22 @@
 syntax = "proto3";
 package api;
 
+service Customer {
+
+}
+
+service Order {
+
+}
+
+service Payment {
+
+}
+
+service Shipment {
+
+}
+
+service Stock {
+    
+}
