@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
@@ -23,12 +21,15 @@ func main() {
 
 	service.Init()
 
+	stock := micro.NewService()
+	stock.Init()
+
 	if err := api.RegisterCatalogHandler(service.Server(),
-		catalog.New(micro.NewEvent("log.catalog", service.Client()))); err != nil {
-		log.Fatal(err)
+		catalog.New(api.NewStockService("stock", stock.Client()))); err != nil {
+		logger.Fatal(err)
 	}
 
 	if err := service.Run(); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 }
