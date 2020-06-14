@@ -8,7 +8,6 @@ import (
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
 	"github.com/ob-vss-20ss/blatt2-cyan/misc"
-	"github.com/ob-vss-20ss/blatt2-cyan/stock"
 )
 
 func main() {
@@ -23,9 +22,8 @@ func main() {
 
 	service.Init()
 
-	if err := api.RegisterStockHandler(service.Server(),
-		stock.New(micro.NewEvent("log.stock", service.Client()))); err != nil {
-		log.Fatal(err)
+	if err := api.RegisterStockHandler(service.Server()); err != nil {
+		logger.Fatal(err)
 	}
 
 	if err := service.Run(); err != nil {

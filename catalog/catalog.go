@@ -8,7 +8,7 @@ import (
 )
 
 type Catalog struct {
-	items []*item
+	items []*Item
 	stock api.StockService
 }
 

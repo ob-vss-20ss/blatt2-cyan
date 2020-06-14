@@ -1,6 +1,6 @@
 package catalog
 
-type item struct {
+type Item struct {
 	itemID    uint32
 	name      string
 	price     uint32

@@ -1,4 +1,4 @@
-package main
+/*package main
 
 import (
 	"log"
@@ -34,4 +34,4 @@ func main() {
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
-}
+}*/

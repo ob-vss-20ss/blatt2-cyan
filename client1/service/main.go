@@ -18,10 +18,7 @@ func main() {
 	)
 	service.Init()
 
-	client := client1.New(api.NewCatalogService("catalog", service.Client()),
-		api.NewOrderService("order", service.Client()),
-		api.NewCustomerService("customer", service.Client()),
-		api.NewPaymentService("payment", service.Client()))
+	client := client1.New(api.NewCatalogService("catalog", service.Client()))
 
 	client.Interact()
 }
