@@ -11,8 +11,9 @@ import (
 
 import (
 	context "context"
-	client "github.com/micro/go-micro/client"
-	server "github.com/micro/go-micro/server"
+	api "github.com/micro/go-micro/v2/api"
+	client "github.com/micro/go-micro/v2/client"
+	server "github.com/micro/go-micro/v2/server"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -27,9 +28,16 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Reference imports to suppress errors if they are not otherwise used.
+var _ api.Endpoint
 var _ context.Context
 var _ client.Option
 var _ server.Option
+
+// Api Endpoints for Catalog service
+
+func NewCatalogEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
 
 // Client API for Catalog service
 
@@ -43,12 +51,6 @@ type catalogService struct {
 }
 
 func NewCatalogService(name string, c client.Client) CatalogService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
 	return &catalogService{
 		c:    c,
 		name: name,
@@ -90,6 +92,12 @@ func (h *catalogHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRe
 	return h.CatalogHandler.GetItemsInStock(ctx, in, out)
 }
 
+// Api Endpoints for Stock service
+
+func NewStockEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
+
 // Client API for Stock service
 
 type StockService interface {
@@ -102,12 +110,6 @@ type stockService struct {
 }
 
 func NewStockService(name string, c client.Client) StockService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
 	return &stockService{
 		c:    c,
 		name: name,
@@ -149,6 +151,12 @@ func (h *stockHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRequ
 	return h.StockHandler.GetItemsInStock(ctx, in, out)
 }
 
+// Api Endpoints for Customer service
+
+func NewCustomerEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
+
 // Client API for Customer service
 
 type CustomerService interface {
@@ -161,12 +169,6 @@ type customerService struct {
 }
 
 func NewCustomerService(name string, c client.Client) CustomerService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
 	return &customerService{
 		c:    c,
 		name: name,
@@ -208,6 +210,12 @@ func (h *customerHandler) RegisterCustomer(ctx context.Context, in *RegisterCust
 	return h.CustomerHandler.RegisterCustomer(ctx, in, out)
 }
 
+// Api Endpoints for Order service
+
+func NewOrderEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
+
 // Client API for Order service
 
 type OrderService interface {
@@ -219,12 +227,6 @@ type orderService struct {
 }
 
 func NewOrderService(name string, c client.Client) OrderService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
 	return &orderService{
 		c:    c,
 		name: name,
@@ -250,6 +252,12 @@ type orderHandler struct {
 	OrderHandler
 }
 
+// Api Endpoints for Payment service
+
+func NewPaymentEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
+
 // Client API for Payment service
 
 type PaymentService interface {
@@ -261,12 +269,6 @@ type paymentService struct {
 }
 
 func NewPaymentService(name string, c client.Client) PaymentService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
 	return &paymentService{
 		c:    c,
 		name: name,
@@ -292,6 +294,12 @@ type paymentHandler struct {
 	PaymentHandler
 }
 
+// Api Endpoints for Shipment service
+
+func NewShipmentEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
+
 // Client API for Shipment service
 
 type ShipmentService interface {
@@ -303,12 +311,6 @@ type shipmentService struct {
 }
 
 func NewShipmentService(name string, c client.Client) ShipmentService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
 	return &shipmentService{
 		c:    c,
 		name: name,
