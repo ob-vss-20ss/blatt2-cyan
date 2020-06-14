@@ -28,7 +28,17 @@ service Stock {
 }
 
 service Customer {
+    rpc RegisterCustomer(RegisterCustomerRequest) returns (RegisterSuccess) {}
+}
 
+message RegisterCustomerRequest {
+    uint32 customerID = 1;   
+	string name = 2;    
+	uint32 address = 3; 
+}
+
+message RegisterSuccess {
+    uint32 customerID = 1; 
 }
 
 service Order {

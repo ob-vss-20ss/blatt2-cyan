@@ -5,9 +5,9 @@ import (
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"github.com/micro/go-plugins/store/redis/v2"
-	"github.com/vesose/example-micro/api"
-	"github.com/vesose/example-micro/client"
-	"github.com/vesose/example-micro/misc"
+	"github.com/ob-vss-20ss/blatt2-cyan/api"
+	"github.com/ob-vss-20ss/blatt2-cyan/client"
+	"github.com/ob-vss-20ss/blatt2-cyan/misc"
 )
 
 func main() {
@@ -22,8 +22,6 @@ func main() {
 	service.Init()
 
 	client := client.New(api.NewCatalogService("catalog", service.Client()),
-		api.NewOrderService("order", service.Client()),
-		api.NewCustomerService("customer", service.Client()),
 		service.Options().Store)
 
 	client.Interact()

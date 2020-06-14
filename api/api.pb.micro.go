@@ -90,9 +90,69 @@ func (h *catalogHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRe
 	return h.CatalogHandler.GetItemsInStock(ctx, in, out)
 }
 
+// Client API for Stock service
+
+type StockService interface {
+	GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error)
+}
+
+type stockService struct {
+	c    client.Client
+	name string
+}
+
+func NewStockService(name string, c client.Client) StockService {
+	if c == nil {
+		c = client.NewClient()
+	}
+	if len(name) == 0 {
+		name = "api"
+	}
+	return &stockService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *stockService) GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error) {
+	req := c.c.NewRequest(c.name, "Stock.GetItemsInStock", in)
+	out := new(ItemsInStockResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Stock service
+
+type StockHandler interface {
+	GetItemsInStock(context.Context, *ItemsInStockRequest, *ItemsInStockResponse) error
+}
+
+func RegisterStockHandler(s server.Server, hdlr StockHandler, opts ...server.HandlerOption) error {
+	type stock interface {
+		GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error
+	}
+	type Stock struct {
+		stock
+	}
+	h := &stockHandler{hdlr}
+	return s.Handle(s.NewHandler(&Stock{h}, opts...))
+}
+
+type stockHandler struct {
+	StockHandler
+}
+
+func (h *stockHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error {
+	return h.StockHandler.GetItemsInStock(ctx, in, out)
+}
+
 // Client API for Customer service
 
 type CustomerService interface {
+	RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, opts ...client.CallOption) (*RegisterSuccess, error)
 }
 
 type customerService struct {
@@ -113,13 +173,25 @@ func NewCustomerService(name string, c client.Client) CustomerService {
 	}
 }
 
+func (c *customerService) RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, opts ...client.CallOption) (*RegisterSuccess, error) {
+	req := c.c.NewRequest(c.name, "Customer.RegisterCustomer", in)
+	out := new(RegisterSuccess)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Customer service
 
 type CustomerHandler interface {
+	RegisterCustomer(context.Context, *RegisterCustomerRequest, *RegisterSuccess) error
 }
 
 func RegisterCustomerHandler(s server.Server, hdlr CustomerHandler, opts ...server.HandlerOption) error {
 	type customer interface {
+		RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, out *RegisterSuccess) error
 	}
 	type Customer struct {
 		customer
@@ -130,6 +202,10 @@ func RegisterCustomerHandler(s server.Server, hdlr CustomerHandler, opts ...serv
 
 type customerHandler struct {
 	CustomerHandler
+}
+
+func (h *customerHandler) RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, out *RegisterSuccess) error {
+	return h.CustomerHandler.RegisterCustomer(ctx, in, out)
 }
 
 // Client API for Order service
@@ -256,46 +332,4 @@ func RegisterShipmentHandler(s server.Server, hdlr ShipmentHandler, opts ...serv
 
 type shipmentHandler struct {
 	ShipmentHandler
-}
-
-// Client API for Stock service
-
-type StockService interface {
-}
-
-type stockService struct {
-	c    client.Client
-	name string
-}
-
-func NewStockService(name string, c client.Client) StockService {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(name) == 0 {
-		name = "api"
-	}
-	return &stockService{
-		c:    c,
-		name: name,
-	}
-}
-
-// Server API for Stock service
-
-type StockHandler interface {
-}
-
-func RegisterStockHandler(s server.Server, hdlr StockHandler, opts ...server.HandlerOption) error {
-	type stock interface {
-	}
-	type Stock struct {
-		stock
-	}
-	h := &stockHandler{hdlr}
-	return s.Handle(s.NewHandler(&Stock{h}, opts...))
-}
-
-type stockHandler struct {
-	StockHandler
 }
