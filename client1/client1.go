@@ -3,20 +3,19 @@ package client1
 import (
 	"context"
 
-	"github.com/coreos/etcd/store"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
 )
 
-type Client1 struct {
+type Client struct {
 	catalog  api.CatalogService
 	order    api.OrderService
 	customer api.CustomerService
 	payment  api.PaymentService
 }
 
-func New(catalog api.CatalogService, order api.OrderService, customer api.CustomerService, payment api.PaymentService, store store.Store) *Client1 {
-	return &Client1{
+func New(catalog api.CatalogService, order api.OrderService, customer api.CustomerService, payment api.PaymentService) *Client {
+	return &Client{
 		catalog:  catalog,
 		order:    order,
 		customer: customer,
@@ -24,7 +23,7 @@ func New(catalog api.CatalogService, order api.OrderService, customer api.Custom
 	}
 }
 
-func (c *Client1) Interact() {
+func (c *Client) Interact() {
 
 	rsp, err := c.catalog.GetItemsInStock(context.Background(), &api.ItemsInStockRequest{})
 
