@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/golang/protobuf v1.4.2
-	github.com/micro/go-micro v1.18.0
 	github.com/micro/go-micro/v2 v2.9.0
 	github.com/micro/go-plugins/logger/zerolog/v2 v2.8.0
 	github.com/micro/go-plugins/registry/etcdv3/v2 v2.8.0
@@ -17,4 +16,9 @@ require (
 	google.golang.org/genproto v0.0.0-20200612171551-7676ae05be11 // indirect
 	google.golang.org/grpc v1.29.1 // indirect
 	google.golang.org/protobuf v1.24.0
+)
+
+replace (
+	github.com/coreos/go-systemd => github.com/coreos/go-systemd/v22 v22.0.0
+	google.golang.org/grpc => google.golang.org/grpc v1.26.0
 )
