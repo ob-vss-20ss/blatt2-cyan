@@ -8,13 +8,14 @@ import (
 )
 
 type Catalog struct {
-	items []*Item
 	stock api.StockService
+	items []*Item
 }
 
 func New(stock api.StockService) *Catalog {
 	return &Catalog{
 		stock: stock,
+		items: make([]*Item, 5),
 	}
 }
 
