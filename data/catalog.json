@@ -1,0 +1,17 @@
+
+[
+    {
+        "itemID": 1,
+        "name": "Tokyo Bay Watch",
+        "price": "150",
+        "available": "23"
+    },
+
+    {
+        "itemID": 1,
+        "name": "La Mer Watch",
+        "price": "150",
+        "available": "23"
+    }
+
+]

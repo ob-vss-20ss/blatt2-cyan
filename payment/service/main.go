@@ -35,3 +35,4 @@ func main() {
 		log.Fatal(err)
 	}
 }*/
+package main
