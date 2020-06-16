@@ -8,10 +8,30 @@
     },
 
     {
-        "itemID": 1,
+        "itemID": 2,
         "name": "La Mer Watch",
-        "price": "150",
-        "available": "23"
-    }
+        "price": "100",
+        "available": "17"
+    }, 
 
+    {
+        "itemID": 3,
+        "name": "Ecco Shoes",
+        "price": "200",
+        "available": "19"
+    },
+
+    {
+        "itemID": 4,
+        "name": "Massimo Dutti Skirt",
+        "price": "130",
+        "available": "19"
+    },
+
+    {
+        "itemID": 5,
+        "name": "Massimo Dutti Coat",
+        "price": "50",
+        "available": "8"
+    }
 ]
