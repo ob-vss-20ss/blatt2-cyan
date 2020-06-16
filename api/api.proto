@@ -2,9 +2,10 @@ syntax = "proto3";
 package api;
 option go_package = ".;api";
 
+
+//Catalog---------------------------------------------------------------------------
 service Catalog {
     rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
-
 }
 
 message Item {
@@ -21,34 +22,120 @@ message ItemsInStockRequest {
 message ItemsInStockResponse {
     repeated Item items = 1;
 }
-
+ 
+//Stock-------------------------------------------------------------------------------
 service Stock {
     rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
-    
+    rpc GetStockOfItem(StockOfItemRequest) returns (StockOfItemResponse) {}
+    rpc ReduceStockOfItem(ReduceStockRequest) returns (ReduceStockResponse) {}
+    rpc IncreaeStockOfItem(IncreaseStockRequest) returns (IncreaseStockResponse) {}
 }
 
+message StockOfItemRequest {
+    uint32 itemID = 1;
+}
+
+message StockOfItemResponse {
+    uint32 stock = 1;
+}
+
+message ReduceStockRequest {
+    uint32 itemID = 1;
+    uint32 amount = 2;
+}
+
+message ReduceStockResponse {
+    bool success = 1;
+}
+
+message IncreaseStockRequest {
+    uint32 itemID = 1;
+    uint32 amount = 2;
+}
+
+message IncreaseStockResponse {
+    bool success = 1;
+}
+
+//Customer-----------------------------------------------------------------------------
 service Customer {
-    rpc RegisterCustomer(RegisterCustomerRequest) returns (RegisterSuccess) {}
+    rpc RegisterCustomer(RegisterCustomerRequest) returns (RegisterCustomerResponse) {}
+    rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse) {}
+    rpc DeleteCustomer(DeleteCustomerRequest) returns (DeleteCustomerResponse) {}
 }
 
 message RegisterCustomerRequest {
     uint32 customerID = 1;   
 	string name = 2;    
-	uint32 address = 3; 
+	string address = 3; 
 }
 
-message RegisterSuccess {
+message RegisterCustomerResponse {
     uint32 customerID = 1; 
 }
 
-service Order {
-
+message GetCustomerRequest {
+    uint32 customerID = 1;
 }
 
+message GetCustomerResponse {
+    uint32 customerID = 1;
+    string name = 2;
+    string address = 3;
+}
+
+message DeleteCustomerRequest {
+    uint32 customerID = 1;
+}
+
+message DeleteCustomerResponse{
+    uint32 customerID = 1; 
+}
+
+//Order-------------------------------------------------------------------------------
+service Order {
+    rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
+    rpc ReturnItem(ReturnRequest) returns (ReturnResponse) {}
+    rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
+}
+
+message PlaceOrderRequest {
+    uint32 customerID = 1;
+    //map articles = 2;
+}
+
+message PlaceOrderResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message ReturnRequest {
+    uint32 customerID = 1;
+    uint32 orderID = 2;
+    //map articles = 3;
+}
+
+message ReturnResponse {
+    bool success = 1;
+    string message= 2;
+}
+
+message CancelRequest {
+    uint32 customerID = 1;
+    uint32 orderID = 2;
+}
+
+message CancelResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+//Payment----------------------------------------------------------------------------
 service Payment {
 
 }
 
+//Shipment---------------------------------------------------------------------------
 service Shipment {
 
 }

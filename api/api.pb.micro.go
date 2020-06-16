@@ -102,6 +102,9 @@ func NewStockEndpoints() []*api.Endpoint {
 
 type StockService interface {
 	GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error)
+	GetStockOfItem(ctx context.Context, in *StockOfItemRequest, opts ...client.CallOption) (*StockOfItemResponse, error)
+	ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, opts ...client.CallOption) (*ReduceStockResponse, error)
+	IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error)
 }
 
 type stockService struct {
@@ -126,15 +129,51 @@ func (c *stockService) GetItemsInStock(ctx context.Context, in *ItemsInStockRequ
 	return out, nil
 }
 
+func (c *stockService) GetStockOfItem(ctx context.Context, in *StockOfItemRequest, opts ...client.CallOption) (*StockOfItemResponse, error) {
+	req := c.c.NewRequest(c.name, "Stock.GetStockOfItem", in)
+	out := new(StockOfItemResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stockService) ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, opts ...client.CallOption) (*ReduceStockResponse, error) {
+	req := c.c.NewRequest(c.name, "Stock.ReduceStockOfItem", in)
+	out := new(ReduceStockResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stockService) IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error) {
+	req := c.c.NewRequest(c.name, "Stock.IncreaeStockOfItem", in)
+	out := new(IncreaseStockResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Stock service
 
 type StockHandler interface {
 	GetItemsInStock(context.Context, *ItemsInStockRequest, *ItemsInStockResponse) error
+	GetStockOfItem(context.Context, *StockOfItemRequest, *StockOfItemResponse) error
+	ReduceStockOfItem(context.Context, *ReduceStockRequest, *ReduceStockResponse) error
+	IncreaeStockOfItem(context.Context, *IncreaseStockRequest, *IncreaseStockResponse) error
 }
 
 func RegisterStockHandler(s server.Server, hdlr StockHandler, opts ...server.HandlerOption) error {
 	type stock interface {
 		GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error
+		GetStockOfItem(ctx context.Context, in *StockOfItemRequest, out *StockOfItemResponse) error
+		ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, out *ReduceStockResponse) error
+		IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error
 	}
 	type Stock struct {
 		stock
@@ -151,6 +190,18 @@ func (h *stockHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRequ
 	return h.StockHandler.GetItemsInStock(ctx, in, out)
 }
 
+func (h *stockHandler) GetStockOfItem(ctx context.Context, in *StockOfItemRequest, out *StockOfItemResponse) error {
+	return h.StockHandler.GetStockOfItem(ctx, in, out)
+}
+
+func (h *stockHandler) ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, out *ReduceStockResponse) error {
+	return h.StockHandler.ReduceStockOfItem(ctx, in, out)
+}
+
+func (h *stockHandler) IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error {
+	return h.StockHandler.IncreaeStockOfItem(ctx, in, out)
+}
+
 // Api Endpoints for Customer service
 
 func NewCustomerEndpoints() []*api.Endpoint {
@@ -160,7 +211,9 @@ func NewCustomerEndpoints() []*api.Endpoint {
 // Client API for Customer service
 
 type CustomerService interface {
-	RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, opts ...client.CallOption) (*RegisterSuccess, error)
+	RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, opts ...client.CallOption) (*RegisterCustomerResponse, error)
+	GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...client.CallOption) (*GetCustomerResponse, error)
+	DeleteCustomer(ctx context.Context, in *DeleteCustomerRequest, opts ...client.CallOption) (*DeleteCustomerResponse, error)
 }
 
 type customerService struct {
@@ -175,9 +228,29 @@ func NewCustomerService(name string, c client.Client) CustomerService {
 	}
 }
 
-func (c *customerService) RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, opts ...client.CallOption) (*RegisterSuccess, error) {
+func (c *customerService) RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, opts ...client.CallOption) (*RegisterCustomerResponse, error) {
 	req := c.c.NewRequest(c.name, "Customer.RegisterCustomer", in)
-	out := new(RegisterSuccess)
+	out := new(RegisterCustomerResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *customerService) GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...client.CallOption) (*GetCustomerResponse, error) {
+	req := c.c.NewRequest(c.name, "Customer.GetCustomer", in)
+	out := new(GetCustomerResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *customerService) DeleteCustomer(ctx context.Context, in *DeleteCustomerRequest, opts ...client.CallOption) (*DeleteCustomerResponse, error) {
+	req := c.c.NewRequest(c.name, "Customer.DeleteCustomer", in)
+	out := new(DeleteCustomerResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -188,12 +261,16 @@ func (c *customerService) RegisterCustomer(ctx context.Context, in *RegisterCust
 // Server API for Customer service
 
 type CustomerHandler interface {
-	RegisterCustomer(context.Context, *RegisterCustomerRequest, *RegisterSuccess) error
+	RegisterCustomer(context.Context, *RegisterCustomerRequest, *RegisterCustomerResponse) error
+	GetCustomer(context.Context, *GetCustomerRequest, *GetCustomerResponse) error
+	DeleteCustomer(context.Context, *DeleteCustomerRequest, *DeleteCustomerResponse) error
 }
 
 func RegisterCustomerHandler(s server.Server, hdlr CustomerHandler, opts ...server.HandlerOption) error {
 	type customer interface {
-		RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, out *RegisterSuccess) error
+		RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, out *RegisterCustomerResponse) error
+		GetCustomer(ctx context.Context, in *GetCustomerRequest, out *GetCustomerResponse) error
+		DeleteCustomer(ctx context.Context, in *DeleteCustomerRequest, out *DeleteCustomerResponse) error
 	}
 	type Customer struct {
 		customer
@@ -206,8 +283,16 @@ type customerHandler struct {
 	CustomerHandler
 }
 
-func (h *customerHandler) RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, out *RegisterSuccess) error {
+func (h *customerHandler) RegisterCustomer(ctx context.Context, in *RegisterCustomerRequest, out *RegisterCustomerResponse) error {
 	return h.CustomerHandler.RegisterCustomer(ctx, in, out)
+}
+
+func (h *customerHandler) GetCustomer(ctx context.Context, in *GetCustomerRequest, out *GetCustomerResponse) error {
+	return h.CustomerHandler.GetCustomer(ctx, in, out)
+}
+
+func (h *customerHandler) DeleteCustomer(ctx context.Context, in *DeleteCustomerRequest, out *DeleteCustomerResponse) error {
+	return h.CustomerHandler.DeleteCustomer(ctx, in, out)
 }
 
 // Api Endpoints for Order service
@@ -219,6 +304,9 @@ func NewOrderEndpoints() []*api.Endpoint {
 // Client API for Order service
 
 type OrderService interface {
+	PlaceOrder(ctx context.Context, in *PlaceOrderRequest, opts ...client.CallOption) (*PlaceOrderResponse, error)
+	ReturnItem(ctx context.Context, in *ReturnRequest, opts ...client.CallOption) (*ReturnResponse, error)
+	CancelOrder(ctx context.Context, in *CancelRequest, opts ...client.CallOption) (*CancelResponse, error)
 }
 
 type orderService struct {
@@ -233,13 +321,49 @@ func NewOrderService(name string, c client.Client) OrderService {
 	}
 }
 
+func (c *orderService) PlaceOrder(ctx context.Context, in *PlaceOrderRequest, opts ...client.CallOption) (*PlaceOrderResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.PlaceOrder", in)
+	out := new(PlaceOrderResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderService) ReturnItem(ctx context.Context, in *ReturnRequest, opts ...client.CallOption) (*ReturnResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.ReturnItem", in)
+	out := new(ReturnResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderService) CancelOrder(ctx context.Context, in *CancelRequest, opts ...client.CallOption) (*CancelResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.CancelOrder", in)
+	out := new(CancelResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Order service
 
 type OrderHandler interface {
+	PlaceOrder(context.Context, *PlaceOrderRequest, *PlaceOrderResponse) error
+	ReturnItem(context.Context, *ReturnRequest, *ReturnResponse) error
+	CancelOrder(context.Context, *CancelRequest, *CancelResponse) error
 }
 
 func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.HandlerOption) error {
 	type order interface {
+		PlaceOrder(ctx context.Context, in *PlaceOrderRequest, out *PlaceOrderResponse) error
+		ReturnItem(ctx context.Context, in *ReturnRequest, out *ReturnResponse) error
+		CancelOrder(ctx context.Context, in *CancelRequest, out *CancelResponse) error
 	}
 	type Order struct {
 		order
@@ -250,6 +374,18 @@ func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.Han
 
 type orderHandler struct {
 	OrderHandler
+}
+
+func (h *orderHandler) PlaceOrder(ctx context.Context, in *PlaceOrderRequest, out *PlaceOrderResponse) error {
+	return h.OrderHandler.PlaceOrder(ctx, in, out)
+}
+
+func (h *orderHandler) ReturnItem(ctx context.Context, in *ReturnRequest, out *ReturnResponse) error {
+	return h.OrderHandler.ReturnItem(ctx, in, out)
+}
+
+func (h *orderHandler) CancelOrder(ctx context.Context, in *CancelRequest, out *CancelResponse) error {
+	return h.OrderHandler.CancelOrder(ctx, in, out)
 }
 
 // Api Endpoints for Payment service
