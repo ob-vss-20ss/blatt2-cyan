@@ -132,10 +132,25 @@ message CancelResponse {
 
 //Payment----------------------------------------------------------------------------
 service Payment {
+    rpc ReceivePayment(PaymentRequest) returns (PaymentResponse) {}
+}
 
+message PaymentRequest {
+    orderID = 1;
+}
+
+message PaymentResponse {}
+
+
+message paymentEvent {
+    uint32 orderID = 1;
 }
 
 //Shipment---------------------------------------------------------------------------
 service Shipment {
 
+}
+
+message shipmentEvent {
+    uint32 orderID = 1;
 }
