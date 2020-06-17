@@ -1,4 +1,4 @@
-/*package main
+package main
 
 import (
 	"log"
@@ -16,23 +16,24 @@ func main() {
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
 	broker := nats.NewBroker()
+	//store := redis.NewStore()
 
 	service := micro.NewService(
 		micro.Name("payment"),
 		micro.Version("latest"),
 		micro.Registry(registry),
 		micro.Broker(broker),
+		//micro.Store(store),
 	)
 
 	service.Init()
 
 	if err := api.RegisterPaymentHandler(service.Server(),
-		payment.New(micro.NewEvent("log.payment", service.Client()))); err != nil {
+		payment.New(micro.NewEvent("payment.payed", service.Client()))); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := service.Run(); err != nil {
+	if err := service.Run(); err == nil {
 		log.Fatal(err)
 	}
-}*/
-package main
+}
