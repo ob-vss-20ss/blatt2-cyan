@@ -155,5 +155,5 @@ message Event {
 	// unix timestamp
 	int64 timestamp = 2;
 	// message
-	uint32 message = 3;
+	string message = 3;
 }
