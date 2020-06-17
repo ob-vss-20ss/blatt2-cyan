@@ -397,6 +397,7 @@ func NewPaymentEndpoints() []*api.Endpoint {
 // Client API for Payment service
 
 type PaymentService interface {
+	ReceivePayment(ctx context.Context, in *PaymentRequest, opts ...client.CallOption) (*PaymentResponse, error)
 }
 
 type paymentService struct {
@@ -411,13 +412,25 @@ func NewPaymentService(name string, c client.Client) PaymentService {
 	}
 }
 
+func (c *paymentService) ReceivePayment(ctx context.Context, in *PaymentRequest, opts ...client.CallOption) (*PaymentResponse, error) {
+	req := c.c.NewRequest(c.name, "Payment.ReceivePayment", in)
+	out := new(PaymentResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Payment service
 
 type PaymentHandler interface {
+	ReceivePayment(context.Context, *PaymentRequest, *PaymentResponse) error
 }
 
 func RegisterPaymentHandler(s server.Server, hdlr PaymentHandler, opts ...server.HandlerOption) error {
 	type payment interface {
+		ReceivePayment(ctx context.Context, in *PaymentRequest, out *PaymentResponse) error
 	}
 	type Payment struct {
 		payment
@@ -428,6 +441,10 @@ func RegisterPaymentHandler(s server.Server, hdlr PaymentHandler, opts ...server
 
 type paymentHandler struct {
 	PaymentHandler
+}
+
+func (h *paymentHandler) ReceivePayment(ctx context.Context, in *PaymentRequest, out *PaymentResponse) error {
+	return h.PaymentHandler.ReceivePayment(ctx, in, out)
 }
 
 // Api Endpoints for Shipment service

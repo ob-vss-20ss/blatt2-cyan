@@ -136,21 +136,22 @@ service Payment {
 }
 
 message PaymentRequest {
-    orderID = 1;
+   uint32 orderID = 1;
 }
 
 message PaymentResponse {}
 
 
-message paymentEvent {
+message PaymentEvent {
     uint32 orderID = 1;
 }
+
 
 //Shipment---------------------------------------------------------------------------
 service Shipment {
 
 }
 
-message shipmentEvent {
+message ShipmentEvent {
     uint32 orderID = 1;
 }
