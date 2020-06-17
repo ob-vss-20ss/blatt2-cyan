@@ -5,8 +5,6 @@ import (
 	"fmt"
 
 	"github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/logger"
-	"github.com/micro/go-micro/v2/store"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
 )
 
@@ -18,16 +16,14 @@ func New(publisher micro.Event) *Payment {
 	return &Payment{publisher: publisher}
 }
 
-func (p *Payment) RecievePayment(ctx context.Context, req *api.PaymentRequest, rsp *api.PaymentResponse) error {
-	msg := fmt.Sprintf("Request payment for", req.orderID)
+func (p *Payment) ReceivePayment(ctx context.Context, req *api.PaymentRequest,*api.PaymentResponse) error {
+	msg := fmt.Sprintf("Payment request for", req.OrderID)
 
-	logger.Info(msg)
+	logger.info(msg)
 
-	if err := p.publisher.Publish(context.Background(), &api.PaymentEvent{
-		orderID: req.orderID,
-	}); err != nil {
-		logger.Errorf("error while publishing: %v", err)
+	if err := p.publisher.Publish(context.Background(), &api.PaymentEvent) {
+		OrderID: req.OrderID
+	}; err != nil {
+		logger.Errorf("error while publishing %v", err)
 	}
-
-	return nil
 }
