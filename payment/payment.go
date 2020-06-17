@@ -3,7 +3,9 @@ package payment
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
@@ -22,11 +24,21 @@ func (p *Payment) ReceivePayment(ctx context.Context, req *api.PaymentRequest, r
 
 	logger.Info(msg)
 
-	err := "hallo"
+	uuid, err := uuid.NewRandom()
 
-	x := p.publisher.Publish(context.Background(), &api.PaymentEvent{OrderID: req.OrderID})
+	if err != nil {
+		logger.Errorf("error creating uuid: %v", err)
+	}
 
-	if x != nil {
+	msg = fmt.Sprintf("%d payed", req.OrderID)
+
+	err = p.publisher.Publish(context.Background(), &api.Event{
+		Id:        uuid.String(),
+		Timestamp: time.Now().Unix(),
+		Message:   msg,
+	})
+
+	if err != nil {
 		logger.Errorf("error while publishing %v", err)
 	}
 
