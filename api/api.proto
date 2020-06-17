@@ -142,16 +142,18 @@ message PaymentRequest {
 message PaymentResponse {}
 
 
-message PaymentEvent {
-    uint32 orderID = 1;
-}
-
-
 //Shipment---------------------------------------------------------------------------
 service Shipment {
 
 }
 
-message ShipmentEvent {
-    uint32 orderID = 1;
+//Event------------------------------------------------------------------------------
+
+message Event {
+	// unique id
+	string id = 1;
+	// unix timestamp
+	int64 timestamp = 2;
+	// message
+	string message = 3;
 }
