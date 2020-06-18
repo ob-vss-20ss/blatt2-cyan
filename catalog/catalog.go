@@ -29,3 +29,10 @@ func (c *Catalog) GetItemsInStock(ctx context.Context, req *api.ItemsInStockRequ
 	return nil
 
 }
+
+func (c *Catalog) GetItem(ctx context.Context, req *api.ItemRequest, rsp *api.ItemResponse) error {
+	//Einzelnes Item mit gegebener Id (req.ItemID) zurückgeben
+
+	return nil
+
+}

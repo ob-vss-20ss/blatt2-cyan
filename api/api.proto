@@ -6,13 +6,14 @@ option go_package = ".;api";
 //Catalog---------------------------------------------------------------------------
 service Catalog {
     rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
+    rpc GetItem(ItemRequest) returns (ItemResponse) {}
 }
 
 message Item {
     uint32 itemID = 1;   
 	string name = 2;    
-	uint32 price = 3;    
-	uint32 available = 4;
+    uint32 price = 3;
+    uint32 available = 4;
 }
 
 message ItemsInStockRequest {
@@ -21,6 +22,16 @@ message ItemsInStockRequest {
 
 message ItemsInStockResponse {
     repeated Item items = 1;
+}
+
+message ItemRequest {
+    uint32 ItemID = 1;
+}
+
+message ItemResponse {
+    uint32 itemID = 1;   
+	string name = 2;    
+	uint32 price = 3;
 }
  
 //Stock-------------------------------------------------------------------------------
@@ -96,26 +107,32 @@ message DeleteCustomerResponse{
 service Order {
     rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
     rpc ReturnItem(ReturnRequest) returns (ReturnResponse) {}
-    //rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
+    rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
+}
+
+message ArticleWithAmount {
+    uint32 ArticleID = 1;
+    uint32 amount = 2;
 }
 
 message PlaceOrderRequest {
     uint32 customerID = 1;
-    //map articles = 2;
+    repeated ArticleWithAmount articleList= 2;
 }
 
 message PlaceOrderResponse {
+    uint32 OrderID = 1;
     string message = 2;
 }
 
 message ReturnRequest {
     uint32 customerID = 1;
     uint32 orderID = 2;
-    //map articles = 3;
+    repeated ArticleWithAmount articleList= 3;
 }
 
 message ReturnResponse {
-    string message= 2;
+    string message= 1;
 }
 
 message CancelRequest {

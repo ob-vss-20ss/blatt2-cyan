@@ -14,10 +14,11 @@ import (
 )
 
 type Shipment struct {
-	publisher micro.Event
+	publisher    micro.Event
+	orderService api.OrderService
 }
 
-func New(publisher micro.Event) *Shipment {
+func New(publisher micro.Event, orderService api.OrderService) *Shipment {
 	return &Shipment{publisher: publisher}
 }
 

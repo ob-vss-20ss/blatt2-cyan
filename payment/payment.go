@@ -20,7 +20,7 @@ func New(publisher micro.Event) *Payment {
 }
 
 func (p *Payment) ReceivePayment(ctx context.Context, req *api.PaymentRequest, res *api.PaymentResponse) error {
-	msg := fmt.Sprintf("Payment request for", req.OrderID)
+	msg := fmt.Sprintf("Payment request for %v", req.OrderID)
 
 	logger.Info(msg)
 
