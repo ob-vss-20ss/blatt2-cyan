@@ -306,7 +306,6 @@ func NewOrderEndpoints() []*api.Endpoint {
 type OrderService interface {
 	PlaceOrder(ctx context.Context, in *PlaceOrderRequest, opts ...client.CallOption) (*PlaceOrderResponse, error)
 	ReturnItem(ctx context.Context, in *ReturnRequest, opts ...client.CallOption) (*ReturnResponse, error)
-	CancelOrder(ctx context.Context, in *CancelRequest, opts ...client.CallOption) (*CancelResponse, error)
 }
 
 type orderService struct {
@@ -341,29 +340,17 @@ func (c *orderService) ReturnItem(ctx context.Context, in *ReturnRequest, opts .
 	return out, nil
 }
 
-func (c *orderService) CancelOrder(ctx context.Context, in *CancelRequest, opts ...client.CallOption) (*CancelResponse, error) {
-	req := c.c.NewRequest(c.name, "Order.CancelOrder", in)
-	out := new(CancelResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // Server API for Order service
 
 type OrderHandler interface {
 	PlaceOrder(context.Context, *PlaceOrderRequest, *PlaceOrderResponse) error
 	ReturnItem(context.Context, *ReturnRequest, *ReturnResponse) error
-	CancelOrder(context.Context, *CancelRequest, *CancelResponse) error
 }
 
 func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.HandlerOption) error {
 	type order interface {
 		PlaceOrder(ctx context.Context, in *PlaceOrderRequest, out *PlaceOrderResponse) error
 		ReturnItem(ctx context.Context, in *ReturnRequest, out *ReturnResponse) error
-		CancelOrder(ctx context.Context, in *CancelRequest, out *CancelResponse) error
 	}
 	type Order struct {
 		order
@@ -382,10 +369,6 @@ func (h *orderHandler) PlaceOrder(ctx context.Context, in *PlaceOrderRequest, ou
 
 func (h *orderHandler) ReturnItem(ctx context.Context, in *ReturnRequest, out *ReturnResponse) error {
 	return h.OrderHandler.ReturnItem(ctx, in, out)
-}
-
-func (h *orderHandler) CancelOrder(ctx context.Context, in *CancelRequest, out *CancelResponse) error {
-	return h.OrderHandler.CancelOrder(ctx, in, out)
 }
 
 // Api Endpoints for Payment service

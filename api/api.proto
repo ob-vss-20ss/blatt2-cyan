@@ -45,7 +45,7 @@ message ReduceStockRequest {
 }
 
 message ReduceStockResponse {
-    bool success = 1;
+    
 }
 
 message IncreaseStockRequest {
@@ -54,7 +54,7 @@ message IncreaseStockRequest {
 }
 
 message IncreaseStockResponse {
-    bool success = 1;
+    
 }
 
 //Customer-----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ message DeleteCustomerResponse{
 service Order {
     rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
     rpc ReturnItem(ReturnRequest) returns (ReturnResponse) {}
-    rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
+    //rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
 }
 
 message PlaceOrderRequest {
@@ -105,7 +105,6 @@ message PlaceOrderRequest {
 }
 
 message PlaceOrderResponse {
-    bool success = 1;
     string message = 2;
 }
 
@@ -116,7 +115,6 @@ message ReturnRequest {
 }
 
 message ReturnResponse {
-    bool success = 1;
     string message= 2;
 }
 
@@ -126,7 +124,6 @@ message CancelRequest {
 }
 
 message CancelResponse {
-    bool success = 1;
     string message = 2;
 }
 
