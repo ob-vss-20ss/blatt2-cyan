@@ -14,12 +14,17 @@ import (
 )
 
 type Shipment struct {
-	publisher    micro.Event
-	orderService api.OrderService
+	publisher       micro.Event
+	orderService    api.OrderService
+	customerService api.CustomerService
 }
 
-func New(publisher micro.Event, orderService api.OrderService) *Shipment {
-	return &Shipment{publisher: publisher}
+func New(publisher micro.Event, orderService api.OrderService, customerService api.CustomerService) *Shipment {
+	return &Shipment{
+		publisher:       publisher,
+		orderService:    orderService,
+		customerService: customerService,
+	}
 }
 
 func ExtractOrderIDFromMsg(msg string) (uint32, error) {
@@ -37,9 +42,29 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 
 	orderID, err := ExtractOrderIDFromMsg(event.Message)
 
-	msg := fmt.Sprintf("Received payment event for %v", event.Message)
+	msg := fmt.Sprintf("Received payment event for %v", orderID)
 
 	logger.Info(msg)
+
+	res, err := p.orderService.GetOrder(ctx, &api.GetOrderRequest{
+		OrderID: orderID,
+	})
+
+	if err != nil {
+		msg = fmt.Sprintf("%d orderID not fount", orderID)
+		return fmt.Errorf("orderID not found")
+	}
+
+	customerRes, err := p.customerService.GetCustomer(ctx, &api.GetCustomerRequest{
+		CustomerID: res.CustomerID,
+	})
+
+	if err != nil {
+		msg = fmt.Sprintf("%d customerID not fount", orderID)
+		return fmt.Errorf("customerID not found")
+	}
+
+	logger.Info("Sending order to\n%v\n%v", customerRes.Name, customerRes.Address)
 
 	uuid, err := uuid.NewRandom()
 
@@ -48,6 +73,8 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 	}
 
 	msg = fmt.Sprintf("%d shipped", orderID)
+
+	logger.Info(msg)
 
 	if err := p.publisher.Publish(context.Background(), &api.Event{
 		Id:        uuid.String(),

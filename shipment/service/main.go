@@ -31,6 +31,7 @@ func main() {
 	shipmentService := shipment.New(
 		micro.NewEvent("shipment.shipped", service.Client()),
 		api.NewOrderService("order", service.Client()),
+		api.NewCustomerService("customer", service.Client()),
 	)
 
 	if err := micro.RegisterSubscriber("payment.*", service.Server(),
@@ -38,7 +39,7 @@ func main() {
 		panic(err)
 	}
 
-	if err := service.Run(); err == nil {
+	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
 }
