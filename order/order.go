@@ -17,6 +17,7 @@ type Order struct {
 	catalogService  api.CatalogService
 	stockService    api.StockService
 	customerService api.CustomerService
+	paymentService  api.PaymentService
 }
 
 type Ordering struct {
@@ -130,7 +131,21 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	}
 
 	//Preis ausrechnen (catalog Service) und die Summe in der Antwort an den Client schicken
-	res.Message = fmt.Sprint(o.CalculatePrice(req.ArticleList))
+	var replacementSuccess bool
+	if req.Replacement {
+		replacementSuccess = o.CreateReplacement(*req)
+	}
+
+	if !replacementSuccess && req.Replacement {
+		res.Message = fmt.Sprint("Leider konnten wir die Ware nicht ersetzen. Deshalb erstatten wir hiermit den Kaufpreis:\n", o.CalculatePrice(req.ArticleList))
+	} else {
+		res.Message = fmt.Sprint("Der angeforderte Ersatz ist auf dem mit der Bestellnummer %d auf dem Weg", o.key)
+		o.key++
+	}
+
+	if !req.Replacement {
+		res.Message = fmt.Sprint("Hier mit erstatten wir wie gewünscht den Kaufpreis:", o.CalculatePrice(req.ArticleList))
+	}
 
 	//Artikel aus Bestellung bzw. Bestellung löschen
 	tmp := o.orderMap[req.OrderID]
@@ -298,4 +313,26 @@ func (o *Order) ShortenOrder(articleListOrder []*api.ArticleWithAmount, articleL
 	}
 
 	return articleListOrder
+}
+
+func (o *Order) CreateReplacement(req api.ReturnRequest) bool {
+	if o.CheckStock(req.ArticleList) {
+		o.ReduceStock(req.ArticleList)
+		o.saveOrder(req.CustomerID, req.ArticleList)
+		_, err := o.paymentService.ReceivePayment(context.Background(), &api.PaymentRequest{
+			OrderID: o.key,
+		})
+
+		if err != nil {
+			return false
+		}
+		return true
+	}
+
+	return false
+}
+
+func (o *Order) saveOrder(customerID uint32, articleList []*api.ArticleWithAmount) {
+	ordering := Ordering{customerID, articleList, false, false}
+	o.orderMap[o.key] = ordering
 }

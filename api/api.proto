@@ -129,7 +129,8 @@ message PlaceOrderResponse {
 message ReturnRequest {
     uint32 customerID = 1;
     uint32 orderID = 2;
-    repeated ArticleWithAmount articleList= 3;
+    bool replacement = 3;
+    repeated ArticleWithAmount articleList = 4;
 }
 
 message ReturnResponse {
