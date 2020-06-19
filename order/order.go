@@ -17,6 +17,7 @@ type Order struct {
 	catalogService  api.CatalogService
 	stockService    api.StockService
 	customerService api.CustomerService
+	paymentService  api.PaymentService
 }
 
 type Ordering struct {
@@ -34,7 +35,7 @@ func New(catalogService api.CatalogService, stockService api.StockService, custo
 func (o *Order) Process(ctx context.Context, event *api.Event) error {
 	eventMsg := ExtractEventMsg(event.Message)
 
-	msg := fmt.Sprintf("Received return %v msg", eventMsg)
+	msg := fmt.Sprintf("Received %v msg", eventMsg)
 	logger.Info(msg)
 
 	orderID, err := shipment.ExtractOrderIDFromMsg(event.Message)
@@ -45,26 +46,25 @@ func (o *Order) Process(ctx context.Context, event *api.Event) error {
 
 	if eventMsg == "payed" {
 		//Bestellung finden und auf bezahlt setzen
-		fmt.Printf("%d", orderID)
+		tmp := o.orderMap[orderID]
+		tmp.payed = true
+		//nicht sicher ob dieser Schritt nötig ist
+		o.orderMap[orderID] = tmp
+
 	}
 
 	if eventMsg == "shipped" {
-
+		tmp := o.orderMap[orderID]
+		tmp.shipped = true
+		//nicht sicher ob dieser Schritt nötig ist
+		o.orderMap[orderID] = tmp
 	}
-
-	//abfragen der adresse bei order service -> customerservice
-
-	//msg := fmt.Sprintf("Received payment event for", event.Message)
-
-	//logger.Info(msg)
-
-	//Bestellung finden und auf bezahlt setzen
 
 	return nil
 }
 
 func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res *api.PlaceOrderResponse) error {
-	msg := fmt.Sprintf("Received Order from %v (customerID)", req.CustomerID)
+	msg := fmt.Sprintf("Received order request from %v (customerID)", req.CustomerID)
 
 	logger.Info(msg)
 
@@ -108,41 +108,106 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 }
 
 func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api.ReturnResponse) error {
-	msg := fmt.Sprintf("Received return Request from %d (customerID)", req.CustomerID)
+	msg := fmt.Sprintf("Received return request from %d (customerID)", req.CustomerID)
 
 	logger.Info(msg)
 
+	ordering, ok := o.orderMap[req.OrderID]
+
+	if !ok {
+		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
+		return fmt.Errorf("Order not Found")
+	}
+
 	//Bestellung prüfen (vorhanden, Kundennummer stimmt überein, artikel mit entsprechender Stückzahl enthalten)
+	if ordering.customerID != req.CustomerID {
+		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer der Bestellung überein."
+		return fmt.Errorf("Wrong Customer")
+	}
+
+	if !o.OrderContainsArticle(ordering.articleList, req.ArticleList) {
+		res.Message = "Die von Ihnen mitgegebene Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war."
+		return fmt.Errorf("Order didn't contain article")
+	}
 
 	//Preis ausrechnen (catalog Service) und die Summe in der Antwort an den Client schicken
+	var replacementSuccess bool
+	if req.Replacement {
+		replacementSuccess = o.CreateReplacement(*req)
+	}
+
+	if !replacementSuccess && req.Replacement {
+		res.Message = fmt.Sprint("Leider konnten wir die Ware nicht ersetzen. Deshalb erstatten wir hiermit den Kaufpreis:\n", o.CalculatePrice(req.ArticleList))
+	} else {
+		res.Message = fmt.Sprint("Der angeforderte Ersatz ist auf dem mit der Bestellnummer %d auf dem Weg", o.key)
+		o.key++
+	}
+
+	if !req.Replacement {
+		res.Message = fmt.Sprint("Hier mit erstatten wir wie gewünscht den Kaufpreis:", o.CalculatePrice(req.ArticleList))
+	}
+
+	//Artikel aus Bestellung bzw. Bestellung löschen
+	tmp := o.orderMap[req.OrderID]
+	tmp.articleList = o.ShortenOrder(ordering.articleList, req.ArticleList)
+	if len(tmp.articleList) == 0 {
+		delete(o.orderMap, req.OrderID)
+	} else {
+		o.orderMap[req.OrderID] = tmp
+	}
 
 	return nil
 }
 
 func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *api.CancelResponse) error {
-	msg := fmt.Sprintf("Received return Request from %d (customerID)", req.CustomerID)
+	msg := fmt.Sprintf("Received cancel request from %d (customerID)", req.CustomerID)
 
 	logger.Info(msg)
 
+	ordering, ok := o.orderMap[req.OrderID]
+
+	if !ok {
+		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
+		return fmt.Errorf("Order not Found")
+	}
+
 	//Bestellung überprüfen(nur Kundennummer)
-	if o.orderMap[req.OrderID].customerID != req.CustomerID {
+	if ordering.customerID != req.CustomerID {
 		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein"
 		return fmt.Errorf("Wrong CutomerID")
 	}
+
 	//Prüfen ob Bestellung Versandt
-	if o.orderMap[req.OrderID].shipped {
+	if ordering.shipped {
 		res.Message = "Die Stornierung dieser Bestellung ist leider nicht mehr möglich, da sie bereits versandt wurde"
 		return fmt.Errorf("Order shipped")
 	}
 
 	//Preis ausrechnen (catalog Service ansprechen), an Client in Antwort senden
-	o.CalculatePrice(o.orderMap[req.OrderID].articleList)
+	o.CalculatePrice(ordering.articleList)
 
 	//Bestände im StockService erhöhen
-	o.IncreaseStock(o.orderMap[req.OrderID].articleList)
+	o.IncreaseStock(ordering.articleList)
 
 	//Bestellung löschen
 	delete(o.orderMap, req.OrderID)
+
+	return nil
+}
+
+func (o *Order) GetOrder(ctx context.Context, req *api.GetOrderRequest, res *api.GetOrderResponse) error {
+	msg := fmt.Sprint("Received get order request:", req.OrderID)
+
+	logger.Info(msg)
+
+	ordering, ok := o.orderMap[req.OrderID]
+
+	if !ok {
+		return fmt.Errorf("Order not Found")
+	}
+
+	res.CustomerID = ordering.customerID
+	res.ArticleList = ordering.articleList
 
 	return nil
 }
@@ -213,4 +278,61 @@ func (o *Order) IncreaseStock(articleList []*api.ArticleWithAmount) {
 			panic(err)
 		}
 	}
+}
+
+func (o *Order) OrderContainsArticle(articleListOrder []*api.ArticleWithAmount, articleListReturned []*api.ArticleWithAmount) bool {
+	for i := range articleListReturned {
+		articleFound := false
+		for j := range articleListReturned {
+			if articleListReturned[i].ArticleID == articleListOrder[j].ArticleID && articleListReturned[i].Amount <= articleListOrder[j].Amount {
+				articleFound = true
+				break
+			}
+		}
+
+		if !articleFound {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (o *Order) ShortenOrder(articleListOrder []*api.ArticleWithAmount, articleListReturned []*api.ArticleWithAmount) []*api.ArticleWithAmount {
+	for i := range articleListReturned {
+		for j := range articleListReturned {
+			if articleListReturned[i].ArticleID == articleListOrder[j].ArticleID {
+				if articleListReturned[i].Amount == articleListOrder[j].Amount {
+					articleListOrder[j] = articleListOrder[len(articleListOrder)-1]
+					articleListOrder = articleListOrder[:len(articleListOrder)-1]
+				} else {
+					articleListOrder[j].Amount -= articleListReturned[i].Amount
+				}
+			}
+		}
+	}
+
+	return articleListOrder
+}
+
+func (o *Order) CreateReplacement(req api.ReturnRequest) bool {
+	if o.CheckStock(req.ArticleList) {
+		o.ReduceStock(req.ArticleList)
+		o.saveOrder(req.CustomerID, req.ArticleList)
+		_, err := o.paymentService.ReceivePayment(context.Background(), &api.PaymentRequest{
+			OrderID: o.key,
+		})
+
+		if err != nil {
+			return false
+		}
+		return true
+	}
+
+	return false
+}
+
+func (o *Order) saveOrder(customerID uint32, articleList []*api.ArticleWithAmount) {
+	ordering := Ordering{customerID, articleList, false, false}
+	o.orderMap[o.key] = ordering
 }
