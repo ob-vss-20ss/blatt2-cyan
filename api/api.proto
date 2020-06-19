@@ -108,6 +108,7 @@ service Order {
     rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
     rpc ReturnItem(ReturnRequest) returns (ReturnResponse) {}
     rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
+    rpc GetOrder(GetOrderRequest) returns (GetOrderResponse) {}
 }
 
 message ArticleWithAmount {
@@ -142,6 +143,15 @@ message CancelRequest {
 
 message CancelResponse {
     string message = 2;
+}
+
+message GetOrderRequest {
+    uint32 OrderID = 1;
+}
+
+message GetOrderResponse {
+    uint32 customerID = 1;
+    repeated ArticleWithAmount articleList= 2;
 }
 
 //Payment----------------------------------------------------------------------------
