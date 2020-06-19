@@ -8,22 +8,68 @@ import (
 )
 
 type Client struct {
-	catalog api.CatalogService
+	customer api.CustomerService
 }
 
-func New(catalog api.CatalogService) *Client {
+func New(customer api.CustomerService) *Client {
 	return &Client{
-		catalog: catalog,
+		customer: customer,
 	}
 }
 
 func (c *Client) Interact() {
+	//customerID := uint32(1)
+	name := "Rebel"
+	address := "Grasmeierstraße, 15"
 
-	rsp, err := c.catalog.GetItemsInStock(context.Background(), &api.ItemsInStockRequest{})
+	registerRsp, err := c.customer.RegisterCustomer(context.Background(), &api.RegisterCustomerRequest{
+		//CustomerID: customerID,
+		Name:    name,
+		Address: address,
+	})
 
 	if err != nil {
 		logger.Error(err)
 	} else {
-		logger.Infof("Received: %+v", rsp.GetItems())
+		logger.Infof("Received added customerID: %+v", registerRsp.GetCustomerID())
+	}
+
+	name = "Toska"
+	address = "Klarastraße, 8"
+
+	registerRsp, err = c.customer.RegisterCustomer(context.Background(), &api.RegisterCustomerRequest{
+		//CustomerID: customerID,
+		Name:    name,
+		Address: address,
+	})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received: %+v", registerRsp.GetCustomerID())
+	}
+
+	customerID := uint32(1)
+
+	getCustomerRsp, err := c.customer.GetCustomer(context.Background(), &api.GetCustomerRequest{
+		CustomerID: customerID,
+	})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received customerID: %+v", getCustomerRsp.GetCustomerID())
+		logger.Infof("Received customer name: %+v", getCustomerRsp.GetName())
+		logger.Infof("Received customer address: %+v", getCustomerRsp.GetAddress())
+	}
+
+	deleteCustomerRsp, err := c.customer.DeleteCustomer(context.Background(), &api.DeleteCustomerRequest{
+		CustomerID: customerID,
+	})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received deleted customerID: %+v", deleteCustomerRsp.GetCustomerID())
 	}
 }
