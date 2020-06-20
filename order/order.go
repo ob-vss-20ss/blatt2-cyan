@@ -27,9 +27,9 @@ type Ordering struct {
 	shipped     bool
 }
 
-func New(catalogService api.CatalogService, stockService api.StockService, customerService api.CustomerService) *Order {
+func New(catalogService api.CatalogService, stockService api.StockService, customerService api.CustomerService, paymentService api.PaymentService) *Order {
 	orderMap := make(map[uint32]Ordering)
-	return &Order{orderMap, 0, catalogService, stockService, customerService}
+	return &Order{orderMap, 0, catalogService, stockService, customerService, paymentService}
 }
 
 func (o *Order) Process(ctx context.Context, event *api.Event) error {
@@ -139,7 +139,7 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	if !replacementSuccess && req.Replacement {
 		res.Message = fmt.Sprint("Leider konnten wir die Ware nicht ersetzen. Deshalb erstatten wir hiermit den Kaufpreis:\n", o.CalculatePrice(req.ArticleList))
 	} else {
-		res.Message = fmt.Sprint("Der angeforderte Ersatz ist auf dem mit der Bestellnummer %d auf dem Weg", o.key)
+		res.Message = fmt.Sprintf("Der angeforderte Ersatz ist auf dem mit der Bestellnummer %d auf dem Weg", o.key)
 		o.key++
 	}
 

@@ -33,6 +33,7 @@ func main() {
 		api.NewCatalogService("catalog", service.Client()),
 		api.NewStockService("stock", service.Client()),
 		api.NewCustomerService("customer", service.Client()),
+		api.NewPaymentService("customer", service.Client()),
 	)
 
 	if err := api.RegisterOrderHandler(service.Server(),

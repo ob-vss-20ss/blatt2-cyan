@@ -32,40 +32,19 @@ func TestExtractOrderIDFromMsg(t *testing.T) {
 }
 
 func TestCalculatPrice(t *testing.T) {
-	msg := "1234 payed"
-	actual := ExtractEventMsg(msg)
-
-	expected := "payed"
-
-	if expected != actual {
-		t.Errorf("Expected %v, but was %v", expected, actual)
-	}
+	//erst mit catalog service möglich
 }
 
 func TestCheckStock(t *testing.T) {
-
+	//erst mit stock service möglich
 }
 
 func TestReduceStock(t *testing.T) {
-	msg := "1234 payed"
-	actual := ExtractEventMsg(msg)
-
-	expected := "payed"
-
-	if expected != actual {
-		t.Errorf("Expected %v, but was %v", expected, actual)
-	}
+	//erst mit Stock service möglich
 }
 
 func TestIncreaseStock(t *testing.T) {
-	msg := "1234 payed"
-	actual := ExtractEventMsg(msg)
-
-	expected := "payed"
-
-	if expected != actual {
-		t.Errorf("Expected %v, but was %v", expected, actual)
-	}
+	// erst mit stockservice möglich
 }
 
 func TestOrderContainsArticles(t *testing.T) {
@@ -85,6 +64,7 @@ func TestOrderContainsArticles(t *testing.T) {
 		api.NewCatalogService("catalog", service.Client()),
 		api.NewStockService("stock", service.Client()),
 		api.NewCustomerService("customer", service.Client()),
+		api.NewPaymentService("payment", service.Client()),
 	)
 
 	//articleListOrder []*api.ArticleWithAmount
@@ -150,6 +130,7 @@ func TestShortenOrder(t *testing.T) {
 		api.NewCatalogService("catalog", service.Client()),
 		api.NewStockService("stock", service.Client()),
 		api.NewCustomerService("customer", service.Client()),
+		api.NewPaymentService("payment", service.Client()),
 	)
 
 	//articleListOrder []*api.ArticleWithAmount
