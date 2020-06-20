@@ -21,10 +21,10 @@ func articleListEqual(expected []*api.ArticleWithAmount, actual []*api.ArticleWi
 }
 
 func TestExtractOrderIDFromMsg(t *testing.T) {
-	msg := "1234 payed"
+	msg := "1234 paid"
 	actual := ExtractEventMsg(msg)
 
-	expected := "payed"
+	expected := "paid"
 
 	if expected != actual {
 		t.Errorf("Expected %v, but was %v", expected, actual)
@@ -47,7 +47,7 @@ func TestIncreaseStock(t *testing.T) {
 	// erst mit stockservice möglich
 }
 
-// nolint:funlen
+// nolint:funlen,gomnd
 func TestOrderContainsArticles(t *testing.T) {
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -114,7 +114,7 @@ func TestOrderContainsArticles(t *testing.T) {
 	}
 }
 
-// nolint:funlen
+// nolint:funlen,gomnd
 func TestShortenOrder(t *testing.T) {
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -134,8 +134,6 @@ func TestShortenOrder(t *testing.T) {
 		api.NewCustomerService("customer", service.Client()),
 		api.NewPaymentService("payment", service.Client()),
 	)
-
-	//articleListOrder []*api.ArticleWithAmount
 
 	var articleListOrder = []*api.ArticleWithAmount{
 		{

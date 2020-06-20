@@ -42,6 +42,10 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 
 	orderID, err := ExtractOrderIDFromMsg(event.Message)
 
+	if err != nil {
+		return fmt.Errorf("error extracting orderID from event message")
+	}
+
 	msg := fmt.Sprintf("Received payment event for %v", orderID)
 
 	logger.Info(msg)

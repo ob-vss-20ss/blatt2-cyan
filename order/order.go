@@ -75,7 +75,7 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 
 	if err != nil {
 		res.Message = "Die von Ihnen angegebene Kundennummer ist ungültig.\nFalls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n"
-		return fmt.Errorf("customer not found.")
+		return fmt.Errorf("customer not found")
 	}
 
 	//Bei StockService verfügbarkeit prüfen
