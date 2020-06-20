@@ -9,7 +9,7 @@ require (
 	github.com/micro/go-plugins/broker/nats/v2 v2.5.0
 	github.com/micro/go-plugins/logger/zerolog/v2 v2.8.0
 	github.com/micro/go-plugins/registry/etcdv3/v2 v2.8.0
-	github.com/micro/go-plugins/store/redis/v2 v2.8.0
+	github.com/micro/go-plugins/store/redis/v2 v2.8.0 // indirect
 	github.com/micro/micro/v2 v2.9.0 // indirect
 	github.com/rs/zerolog v1.19.0
 	github.com/vesose/example-micro v0.0.0-20200609090234-d46ee1255141 // indirect

@@ -9,11 +9,13 @@ import (
 
 type Client struct {
 	customer api.CustomerService
+	catalog  api.CatalogService
 }
 
-func New(customer api.CustomerService) *Client {
+func New(customer api.CustomerService, catalog api.CatalogService) *Client {
 	return &Client{
 		customer: customer,
+		catalog:  catalog,
 	}
 }
 
