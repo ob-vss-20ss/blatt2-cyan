@@ -4,7 +4,9 @@ go 1.13
 
 require (
 	github.com/golang/protobuf v1.4.2
+	github.com/google/uuid v1.1.1
 	github.com/micro/go-micro/v2 v2.9.0
+	github.com/micro/go-plugins/broker/nats/v2 v2.5.0
 	github.com/micro/go-plugins/logger/zerolog/v2 v2.8.0
 	github.com/micro/go-plugins/registry/etcdv3/v2 v2.8.0
 	github.com/micro/go-plugins/store/redis/v2 v2.8.0 // indirect
