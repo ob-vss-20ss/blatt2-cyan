@@ -269,7 +269,7 @@ func (o *Order) ReduceStock(articleList []*api.ArticleWithAmount) {
 
 func (o *Order) IncreaseStock(articleList []*api.ArticleWithAmount) {
 	for i := range articleList {
-		_, err := o.stockService.IncreaeStockOfItem(context.Background(), &api.IncreaseStockRequest{
+		_, err := o.stockService.IncreaseStockOfItem(context.Background(), &api.IncreaseStockRequest{
 			ItemID: articleList[i].ArticleID,
 			Amount: articleList[i].Amount,
 		})

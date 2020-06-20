@@ -9,17 +9,19 @@ import (
 
 type Catalog struct {
 	stock api.StockService
-	items []*Item
+	items map[uint32]*Item
 }
 
 func New(stock api.StockService) *Catalog {
 	return &Catalog{
 		stock: stock,
-		items: make([]*Item, 5),
+		items: make(map[uint32]*Item),
 	}
 }
 
-func (c *Catalog) GetItemsInStock(ctx context.Context, req *api.ItemsInStockRequest, rsp *api.ItemsInStockResponse) error {
+func (c *Catalog) GetItemsInStock(ctx context.Context,
+	req *api.ItemsInStockRequest,
+	rsp *api.ItemsInStockResponse) error {
 	_, err := c.stock.GetItemsInStock(context.Background(), &api.ItemsInStockRequest{})
 
 	if err != nil {
@@ -30,7 +32,9 @@ func (c *Catalog) GetItemsInStock(ctx context.Context, req *api.ItemsInStockRequ
 
 }
 
-func (c *Catalog) GetItem(ctx context.Context, req *api.ItemRequest, rsp *api.ItemResponse) error {
+func (c *Catalog) GetItem(ctx context.Context,
+	req *api.ItemRequest,
+	rsp *api.ItemResponse) error {
 	//Einzelnes Item mit gegebener Id (req.ItemID) zurückgeben
 
 	return nil

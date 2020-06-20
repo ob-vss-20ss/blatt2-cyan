@@ -39,7 +39,7 @@ service Stock {
     rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
     rpc GetStockOfItem(StockOfItemRequest) returns (StockOfItemResponse) {}
     rpc ReduceStockOfItem(ReduceStockRequest) returns (ReduceStockResponse) {}
-    rpc IncreaeStockOfItem(IncreaseStockRequest) returns (IncreaseStockResponse) {}
+    rpc IncreaseStockOfItem(IncreaseStockRequest) returns (IncreaseStockResponse) {}
 }
 
 message StockOfItemRequest {

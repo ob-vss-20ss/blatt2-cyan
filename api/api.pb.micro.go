@@ -121,7 +121,7 @@ type StockService interface {
 	GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error)
 	GetStockOfItem(ctx context.Context, in *StockOfItemRequest, opts ...client.CallOption) (*StockOfItemResponse, error)
 	ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, opts ...client.CallOption) (*ReduceStockResponse, error)
-	IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error)
+	IncreaseStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error)
 }
 
 type stockService struct {
@@ -166,8 +166,8 @@ func (c *stockService) ReduceStockOfItem(ctx context.Context, in *ReduceStockReq
 	return out, nil
 }
 
-func (c *stockService) IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error) {
-	req := c.c.NewRequest(c.name, "Stock.IncreaeStockOfItem", in)
+func (c *stockService) IncreaseStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error) {
+	req := c.c.NewRequest(c.name, "Stock.IncreaseStockOfItem", in)
 	out := new(IncreaseStockResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -182,7 +182,7 @@ type StockHandler interface {
 	GetItemsInStock(context.Context, *ItemsInStockRequest, *ItemsInStockResponse) error
 	GetStockOfItem(context.Context, *StockOfItemRequest, *StockOfItemResponse) error
 	ReduceStockOfItem(context.Context, *ReduceStockRequest, *ReduceStockResponse) error
-	IncreaeStockOfItem(context.Context, *IncreaseStockRequest, *IncreaseStockResponse) error
+	IncreaseStockOfItem(context.Context, *IncreaseStockRequest, *IncreaseStockResponse) error
 }
 
 func RegisterStockHandler(s server.Server, hdlr StockHandler, opts ...server.HandlerOption) error {
@@ -190,7 +190,7 @@ func RegisterStockHandler(s server.Server, hdlr StockHandler, opts ...server.Han
 		GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error
 		GetStockOfItem(ctx context.Context, in *StockOfItemRequest, out *StockOfItemResponse) error
 		ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, out *ReduceStockResponse) error
-		IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error
+		IncreaseStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error
 	}
 	type Stock struct {
 		stock
@@ -215,8 +215,8 @@ func (h *stockHandler) ReduceStockOfItem(ctx context.Context, in *ReduceStockReq
 	return h.StockHandler.ReduceStockOfItem(ctx, in, out)
 }
 
-func (h *stockHandler) IncreaeStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error {
-	return h.StockHandler.IncreaeStockOfItem(ctx, in, out)
+func (h *stockHandler) IncreaseStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error {
+	return h.StockHandler.IncreaseStockOfItem(ctx, in, out)
 }
 
 // Api Endpoints for Customer service
