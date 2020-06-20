@@ -3,7 +3,7 @@ package shipment
 import "testing"
 
 func TestExtractOrderIDFromMsg(t *testing.T) {
-	msg := "1234 payed"
+	msg := "1234 paid"
 	actual, err := ExtractOrderIDFromMsg(msg)
 
 	expected := uint32(1234)

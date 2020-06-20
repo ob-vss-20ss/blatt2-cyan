@@ -179,5 +179,4 @@ func TestShortenOrder(t *testing.T) {
 	if !articleListEqual(expected, actual) {
 		t.Errorf("Expected %v but was %v", expected, actual)
 	}
-
 }

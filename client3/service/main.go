@@ -20,7 +20,8 @@ func main() {
 	)
 	service.Init()
 
-	client := client3.New(api.NewOrderService("order", service.Client()), api.NewPaymentService("payment", service.Client()))
+	client := client3.New(api.NewOrderService("order", service.Client()),
+		api.NewPaymentService("payment", service.Client()))
 
 	client.Interact()
 }

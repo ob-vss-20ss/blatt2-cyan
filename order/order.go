@@ -23,11 +23,12 @@ type Order struct {
 type Ordering struct {
 	customerID  uint32
 	articleList []*api.ArticleWithAmount
-	payed       bool
+	paid        bool
 	shipped     bool
 }
 
-func New(catalogService api.CatalogService, stockService api.StockService, customerService api.CustomerService, paymentService api.PaymentService) *Order {
+func New(catalogService api.CatalogService, stockService api.StockService,
+	customerService api.CustomerService, paymentService api.PaymentService) *Order {
 	orderMap := make(map[uint32]Ordering)
 	return &Order{orderMap, 0, catalogService, stockService, customerService, paymentService}
 }
@@ -44,10 +45,10 @@ func (o *Order) Process(ctx context.Context, event *api.Event) error {
 		logger.Fatal(err)
 	}
 
-	if eventMsg == "payed" {
+	if eventMsg == "paid" {
 		//Bestellung finden und auf bezahlt setzen
 		tmp := o.orderMap[orderID]
-		tmp.payed = true
+		tmp.paid = true
 		o.orderMap[orderID] = tmp
 	}
 
@@ -221,7 +222,6 @@ func ExtractEventMsg(msg string) string {
 func (o *Order) CalculatePrice(articleList []*api.ArticleWithAmount) uint32 {
 	price := uint32(0)
 	for i := range articleList {
-
 		catalogRsp, err := o.catalogService.GetItem(context.Background(), &api.ItemRequest{
 			ItemID: articleList[i].ArticleID,
 		})
@@ -238,7 +238,6 @@ func (o *Order) CalculatePrice(articleList []*api.ArticleWithAmount) uint32 {
 
 func (o *Order) CheckStock(articleList []*api.ArticleWithAmount) bool {
 	for i := range articleList {
-
 		stockRsp, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
 			ItemID: articleList[i].ArticleID,
 		})
@@ -281,11 +280,13 @@ func (o *Order) IncreaseStock(articleList []*api.ArticleWithAmount) {
 	}
 }
 
-func (o *Order) OrderContainsArticle(articleListOrder []*api.ArticleWithAmount, articleListReturned []*api.ArticleWithAmount) bool {
+func (o *Order) OrderContainsArticle(articleListOrder []*api.ArticleWithAmount,
+	articleListReturned []*api.ArticleWithAmount) bool {
 	for i := range articleListReturned {
 		articleFound := false
 		for j := range articleListReturned {
-			if articleListReturned[i].ArticleID == articleListOrder[j].ArticleID && articleListReturned[i].Amount <= articleListOrder[j].Amount {
+			if articleListReturned[i].ArticleID == articleListOrder[j].ArticleID &&
+				articleListReturned[i].Amount <= articleListOrder[j].Amount {
 				articleFound = true
 				break
 			}
@@ -299,7 +300,8 @@ func (o *Order) OrderContainsArticle(articleListOrder []*api.ArticleWithAmount, 
 	return true
 }
 
-func (o *Order) ShortenOrder(articleListOrder []*api.ArticleWithAmount, articleListReturned []*api.ArticleWithAmount) []*api.ArticleWithAmount {
+func (o *Order) ShortenOrder(articleListOrder []*api.ArticleWithAmount,
+	articleListReturned []*api.ArticleWithAmount) []*api.ArticleWithAmount {
 	for i := range articleListReturned {
 		for j := range articleListReturned {
 			if articleListReturned[i].ArticleID == articleListOrder[j].ArticleID {

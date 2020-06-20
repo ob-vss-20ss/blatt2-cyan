@@ -30,7 +30,7 @@ func (p *Payment) ReceivePayment(ctx context.Context, req *api.PaymentRequest, r
 		logger.Errorf("error creating uuid: %v", err)
 	}
 
-	msg = fmt.Sprintf("%d payed", req.OrderID)
+	msg = fmt.Sprintf("%d paid", req.OrderID)
 
 	err = p.publisher.Publish(context.Background(), &api.Event{
 		Id:        uuid.String(),
