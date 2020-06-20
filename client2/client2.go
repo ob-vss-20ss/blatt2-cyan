@@ -18,7 +18,6 @@ func New(orderService api.OrderService) *Client {
 }
 
 func (c *Client) Interact() {
-
 	var articleListOrder = []*api.ArticleWithAmount{
 		{
 			ArticleID: 1,

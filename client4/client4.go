@@ -20,7 +20,6 @@ func New(orderService api.OrderService, paymentService api.PaymentService) *Clie
 }
 
 func (c *Client) Interact() {
-
 	var articleListOrder = []*api.ArticleWithAmount{
 		{
 			ArticleID: 1,

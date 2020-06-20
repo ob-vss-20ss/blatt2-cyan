@@ -48,9 +48,7 @@ func (o *Order) Process(ctx context.Context, event *api.Event) error {
 		//Bestellung finden und auf bezahlt setzen
 		tmp := o.orderMap[orderID]
 		tmp.payed = true
-		//nicht sicher ob dieser Schritt nötig ist
 		o.orderMap[orderID] = tmp
-
 	}
 
 	if eventMsg == "shipped" {
@@ -326,10 +324,7 @@ func (o *Order) CreateReplacement(req *api.ReturnRequest) bool {
 			OrderID: o.key,
 		})
 
-		if err != nil {
-			return false
-		}
-		return true
+		return err == nil
 	}
 
 	return false
