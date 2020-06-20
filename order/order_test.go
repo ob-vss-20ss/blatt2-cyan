@@ -47,6 +47,7 @@ func TestIncreaseStock(t *testing.T) {
 	// erst mit stockservice möglich
 }
 
+// nolint:funlen
 func TestOrderContainsArticles(t *testing.T) {
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -113,6 +114,7 @@ func TestOrderContainsArticles(t *testing.T) {
 	}
 }
 
+// nolint:funlen
 func TestShortenOrder(t *testing.T) {
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()

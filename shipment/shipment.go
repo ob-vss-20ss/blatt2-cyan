@@ -52,6 +52,7 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 
 	if err != nil {
 		msg = fmt.Sprintf("%d orderID not fount", orderID)
+		logger.Info(msg)
 		return fmt.Errorf("orderID not found")
 	}
 
@@ -61,6 +62,7 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 
 	if err != nil {
 		msg = fmt.Sprintf("%d customerID not fount", orderID)
+		logger.Info(msg)
 		return fmt.Errorf("customerID not found")
 	}
 

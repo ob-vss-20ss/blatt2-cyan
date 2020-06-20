@@ -63,6 +63,7 @@ func (o *Order) Process(ctx context.Context, event *api.Event) error {
 	return nil
 }
 
+// nolint:lll
 func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res *api.PlaceOrderResponse) error {
 	msg := fmt.Sprintf("Received order request from %v (customerID)", req.CustomerID)
 
@@ -75,13 +76,13 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 
 	if err != nil {
 		res.Message = "Die von Ihnen angegebene Kundennummer ist ungültig.\nFalls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n"
-		return fmt.Errorf("Customer not found.")
+		return fmt.Errorf("customer not found.")
 	}
 
 	//Bei StockService verfügbarkeit prüfen
 	if !o.CheckStock(req.ArticleList) {
 		res.Message = "Von einem der von Ihnen gewälten Artikel ist nicht mehr genug auf Lager.\nReduzieren Sie die Bestellmenge und versuche Sie es nochmal.\n"
-		return fmt.Errorf("Stock to low")
+		return fmt.Errorf("stock too low")
 	}
 
 	//Bei Stock Service Bestand reduzieren
@@ -107,6 +108,7 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 	return nil
 }
 
+// nolint:lll
 func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api.ReturnResponse) error {
 	msg := fmt.Sprintf("Received return request from %d (customerID)", req.CustomerID)
 
@@ -116,24 +118,24 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 
 	if !ok {
 		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
-		return fmt.Errorf("Order not Found")
+		return fmt.Errorf("order not found")
 	}
 
 	//Bestellung prüfen (vorhanden, Kundennummer stimmt überein, artikel mit entsprechender Stückzahl enthalten)
 	if ordering.customerID != req.CustomerID {
 		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer der Bestellung überein."
-		return fmt.Errorf("Wrong Customer")
+		return fmt.Errorf("wrong customer")
 	}
 
 	if !o.OrderContainsArticle(ordering.articleList, req.ArticleList) {
 		res.Message = "Die von Ihnen mitgegebene Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war."
-		return fmt.Errorf("Order didn't contain article")
+		return fmt.Errorf("order didn't contain article")
 	}
 
 	//Preis ausrechnen (catalog Service) und die Summe in der Antwort an den Client schicken
 	var replacementSuccess bool
 	if req.Replacement {
-		replacementSuccess = o.CreateReplacement(*req)
+		replacementSuccess = o.CreateReplacement(req)
 	}
 
 	if !replacementSuccess && req.Replacement {
@@ -159,6 +161,7 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	return nil
 }
 
+// nolint:lll
 func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *api.CancelResponse) error {
 	msg := fmt.Sprintf("Received cancel request from %d (customerID)", req.CustomerID)
 
@@ -168,19 +171,19 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 
 	if !ok {
 		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
-		return fmt.Errorf("Order not Found")
+		return fmt.Errorf("order not found")
 	}
 
 	//Bestellung überprüfen(nur Kundennummer)
 	if ordering.customerID != req.CustomerID {
 		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein"
-		return fmt.Errorf("Wrong CutomerID")
+		return fmt.Errorf("wrong customerID")
 	}
 
 	//Prüfen ob Bestellung Versandt
 	if ordering.shipped {
 		res.Message = "Die Stornierung dieser Bestellung ist leider nicht mehr möglich, da sie bereits versandt wurde"
-		return fmt.Errorf("Order shipped")
+		return fmt.Errorf("order already shipped")
 	}
 
 	//Preis ausrechnen (catalog Service ansprechen), an Client in Antwort senden
@@ -203,7 +206,7 @@ func (o *Order) GetOrder(ctx context.Context, req *api.GetOrderRequest, res *api
 	ordering, ok := o.orderMap[req.OrderID]
 
 	if !ok {
-		return fmt.Errorf("Order not Found")
+		return fmt.Errorf("order not found")
 	}
 
 	res.CustomerID = ordering.customerID
@@ -315,7 +318,7 @@ func (o *Order) ShortenOrder(articleListOrder []*api.ArticleWithAmount, articleL
 	return articleListOrder
 }
 
-func (o *Order) CreateReplacement(req api.ReturnRequest) bool {
+func (o *Order) CreateReplacement(req *api.ReturnRequest) bool {
 	if o.CheckStock(req.ArticleList) {
 		o.ReduceStock(req.ArticleList)
 		o.saveOrder(req.CustomerID, req.ArticleList)
