@@ -37,6 +37,7 @@ message ItemResponse {
 //Stock-------------------------------------------------------------------------------
 service Stock {
     rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
+    rpc GetItem(ItemRequest) returns (ItemResponse) {}
     rpc GetStockOfItem(StockOfItemRequest) returns (StockOfItemResponse) {}
     rpc ReduceStockOfItem(ReduceStockRequest) returns (ReduceStockResponse) {}
     rpc IncreaseStockOfItem(IncreaseStockRequest) returns (IncreaseStockResponse) {}
