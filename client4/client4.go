@@ -19,6 +19,7 @@ func New(orderService api.OrderService, paymentService api.PaymentService) *Clie
 	}
 }
 
+//nolint:mnd
 func (c *Client) Interact() {
 	var articleListOrder = []*api.ArticleWithAmount{
 		{
