@@ -43,11 +43,11 @@ service Stock {
 }
 
 message StockOfItemRequest {
-    uint32 itemID = 1;
+    uint32 ArticleID = 1;
 }
 
 message StockOfItemResponse {
-    uint32 stock = 1;
+    uint32 amount = 1;
 }
 
 message ReduceStockRequest {
@@ -153,6 +153,8 @@ message GetOrderRequest {
 message GetOrderResponse {
     uint32 customerID = 1;
     repeated ArticleWithAmount articleList= 2;
+    bool paid = 3;
+    bool shipped = 4;
 }
 
 //Payment----------------------------------------------------------------------------

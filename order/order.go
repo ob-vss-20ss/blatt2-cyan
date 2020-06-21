@@ -210,6 +210,8 @@ func (o *Order) GetOrder(ctx context.Context, req *api.GetOrderRequest, res *api
 
 	res.CustomerID = ordering.customerID
 	res.ArticleList = ordering.articleList
+	res.Paid = ordering.paid
+	res.Shipped = ordering.shipped
 
 	return nil
 }
@@ -239,14 +241,14 @@ func (o *Order) CalculatePrice(articleList []*api.ArticleWithAmount) uint32 {
 func (o *Order) CheckStock(articleList []*api.ArticleWithAmount) bool {
 	for i := range articleList {
 		stockRsp, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
-			ItemID: articleList[i].ArticleID,
+			ArticleID: articleList[i].ArticleID,
 		})
 
 		if err != nil {
 			panic(err)
 		}
 
-		if stockRsp.Stock < articleList[i].Amount {
+		if stockRsp.Amount < articleList[i].Amount {
 			return false
 		}
 	}
