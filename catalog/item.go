@@ -1,8 +1,8 @@
 package catalog
 
 type Item struct {
-	itemID    uint32
-	name      string
-	price     uint32
-	available uint32
+	ItemID    uint32
+	Name      string
+	Price     uint32
+	Available uint32
 }
