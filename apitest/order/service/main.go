@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/logger"
@@ -24,3 +25,4 @@ func main() {
 
 	client.Interact()
 }
+*/

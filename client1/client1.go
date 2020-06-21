@@ -98,17 +98,17 @@ func (c *Client) Interact() {
 	}
 
 	//Get item in stock ID1
-	itemID := uint32(1)
+	ArticleID := uint32(1)
 	itemInStockRsp, err := c.catalog.GetItem(context.Background(),
 		&api.ItemRequest{
-			ItemID: itemID,
+			ArticleID: ArticleID,
 		})
 
 	if err != nil {
 		logger.Error(err)
 	} else {
 		logger.Infof("Received item in stock ID1: %+v",
-			itemInStockRsp.GetItemID())
+			itemInStockRsp.GetArticleID())
 		logger.Infof("Received item in stock name: %+v",
 			itemInStockRsp.GetName())
 		logger.Infof("Received item in stock price: %+v",

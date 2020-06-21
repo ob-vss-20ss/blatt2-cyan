@@ -83,7 +83,7 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 	logger.Info(msg)
 
 	if err := p.publisher.Publish(context.Background(), &api.Event{
-		Id:        uuid.String(),
+		ID:        uuid.String(),
 		Timestamp: time.Now().Unix(),
 		Message:   msg,
 	}); err != nil {

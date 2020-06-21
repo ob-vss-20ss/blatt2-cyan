@@ -33,7 +33,7 @@ func (p *Payment) ReceivePayment(ctx context.Context, req *api.PaymentRequest, r
 	msg = fmt.Sprintf("%d paid", req.OrderID)
 
 	err = p.publisher.Publish(context.Background(), &api.Event{
-		Id:        uuid.String(),
+		ID:        uuid.String(),
 		Timestamp: time.Now().Unix(),
 		Message:   msg,
 	})
