@@ -25,7 +25,7 @@ func (c *Customer) RegisterCustomer(ctx context.Context,
 	address := req.Address
 	customerID := c.registerCustomer(name, address)
 	fmt.Printf("Custommers: %v\n", c.customers)
-	fmt.Printf("Custommers: %v\n", len(c.customers))
+	fmt.Printf("Number of custommers: %v\n", len(c.customers))
 	rsp.CustomerID = customerID
 	return nil
 }
@@ -49,13 +49,13 @@ func (c *Customer) DeleteCustomer(ctx context.Context,
 	req *api.DeleteCustomerRequest,
 	rsp *api.DeleteCustomerResponse) error {
 	customerID := req.CustomerID
-	_, ok := c.customers[customerID]
+	customer, ok := c.customers[customerID]
 	if ok {
 		delete(c.customers, customerID)
 	}
 	fmt.Printf("Custommers: %v\n", c.customers)
-	fmt.Printf("Custommers: %v\n", len(c.customers))
-	rsp.CustomerID = customerID
+	fmt.Printf("Number of custommers: %v\n", len(c.customers))
+	rsp.CustomerID = customer.customerID
 	return nil
 }
 

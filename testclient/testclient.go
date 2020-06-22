@@ -1,32 +1,29 @@
-package client1
+package testclient
 
 import (
+	"context"
+
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
 )
 
 type Client struct {
 	customer api.CustomerService
 	catalog  api.CatalogService
-	order    api.OrderService
-	payment  api.PaymentService
+	stock    api.StockService
 }
 
 func New(customer api.CustomerService,
 	catalog api.CatalogService,
-	order api.OrderService,
-	payment api.PaymentService) *Client {
+	stock api.StockService) *Client {
 	return &Client{
 		customer: customer,
 		catalog:  catalog,
-		order:    order,
-		payment:  payment,
+		stock:    stock,
 	}
 }
 
 func (c *Client) Interact() {
-}
-
-/*func (c *Client) Interact() {
 	//Register customer ID1
 	//customerID := uint32(1)
 	name := "Rebel"
@@ -59,7 +56,7 @@ func (c *Client) Interact() {
 	if err != nil {
 		logger.Error(err)
 	} else {
-		logger.Infof("Received: %+v", registerRsp.GetCustomerID())
+		logger.Infof("Received added customerID: %+v", registerRsp.GetCustomerID())
 	}
 	//Get customer ID1
 	customerID := uint32(1)
@@ -167,4 +164,4 @@ func (c *Client) Interact() {
 		logger.Infof("Received increased stock of item ID1: %+v",
 			stockIncreaseRsp.GetAmount())
 	}
-}*/
+}

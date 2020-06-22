@@ -13,7 +13,7 @@ message Item {
     uint32 ArticleID = 1;   
 	string Name = 2;    
     uint32 Price = 3;
-    uint32 Available = 4;
+    uint32 Amount = 4;
 }
 
 message ItemsInStockRequest {
@@ -57,7 +57,8 @@ message ReduceStockRequest {
 }
 
 message ReduceStockResponse {
-    
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
 }
 
 message IncreaseStockRequest {
@@ -66,7 +67,8 @@ message IncreaseStockRequest {
 }
 
 message IncreaseStockResponse {
-    
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
 }
 
 //Customer-----------------------------------------------------------------------------

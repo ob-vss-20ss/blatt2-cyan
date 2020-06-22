@@ -17,8 +17,8 @@ func New() *Stock {
 }
 
 func (c *Stock) AddItems() {
-	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Available: 3}
-	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Available: 1}
+	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Amount: 3}
+	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Amount: 1}
 }
 
 func (c *Stock) GetItemsInStock(ctx context.Context,
@@ -36,7 +36,7 @@ func (c *Stock) GetItemsInStock(ctx context.Context,
 func (c *Stock) GetItem(ctx context.Context,
 	req *api.ItemRequest,
 	rsp *api.ItemResponse) error {
-	c.AddItems()
+	//c.AddItems()
 	ArticleID := req.ArticleID
 	_, ok := c.items[ArticleID]
 	if ok {
@@ -50,11 +50,11 @@ func (c *Stock) GetItem(ctx context.Context,
 func (c *Stock) GetStockOfItem(ctx context.Context,
 	req *api.StockOfItemRequest,
 	rsp *api.StockOfItemResponse) error {
-	c.AddItems()
-	itemID := req.ItemID
+	//c.AddItems()
+	itemID := req.ArticleID
 	_, ok := c.items[itemID]
 	if ok {
-		rsp.Stock = c.items[itemID].Available
+		rsp.Amount = c.items[itemID].Amount
 	}
 	return nil
 }
@@ -62,11 +62,29 @@ func (c *Stock) GetStockOfItem(ctx context.Context,
 func (c *Stock) ReduceStockOfItem(ctx context.Context,
 	req *api.ReduceStockRequest,
 	rsp *api.ReduceStockResponse) error {
+	itemID := req.ArticleID
+	reduceBy := req.Amount
+	_, ok := c.items[itemID]
+	if ok {
+		available := c.items[itemID].Amount - reduceBy
+		c.items[itemID].Amount = available
+		rsp.ArticleID = c.items[itemID].ArticleID
+		rsp.Amount = available
+	}
 	return nil
 }
 
 func (c *Stock) IncreaseStockOfItem(ctx context.Context,
 	req *api.IncreaseStockRequest,
 	rsp *api.IncreaseStockResponse) error {
+	itemID := req.ArticleID
+	increaseBy := req.Amount
+	_, ok := c.items[itemID]
+	if ok {
+		available := c.items[itemID].Amount + increaseBy
+		c.items[itemID].Amount = available
+		rsp.ArticleID = c.items[itemID].ArticleID
+		rsp.Amount = available
+	}
 	return nil
 }

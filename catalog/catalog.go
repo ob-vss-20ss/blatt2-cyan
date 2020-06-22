@@ -20,9 +20,9 @@ func New(stock api.StockService) *Catalog {
 }
 
 func (c *Catalog) AddItems() {
-	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Available: 3}
-	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Available: 1}
-	c.items[3] = &api.Item{ArticleID: 3, Name: "FalconHeavy", Price: 1000, Available: 2}
+	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Amount: 3}
+	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Amount: 1}
+	c.items[3] = &api.Item{ArticleID: 3, Name: "FalconHeavy", Price: 1000, Amount: 2}
 }
 
 func (c *Catalog) GetItemsInStock(ctx context.Context,
@@ -48,7 +48,7 @@ func (c *Catalog) GetItemsInStock(ctx context.Context,
 func (c *Catalog) GetItem(ctx context.Context,
 	req *api.ItemRequest,
 	rsp *api.ItemResponse) error {
-	c.AddItems()
+	//c.AddItems()
 
 	ArticleID := req.ArticleID
 	_, ok := c.items[ArticleID]
@@ -73,7 +73,5 @@ func (c *Catalog) GetItem(ctx context.Context,
 		rsp.Name = itemInStockRsp.GetName()
 		rsp.Price = itemInStockRsp.GetPrice()
 	}
-	//Einzelnes Item mit gegebener Id (req.ArticleID) zurückgeben
-
 	return nil
 }
