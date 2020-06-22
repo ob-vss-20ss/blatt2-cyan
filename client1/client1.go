@@ -10,13 +10,16 @@ import (
 type Client struct {
 	customer api.CustomerService
 	catalog  api.CatalogService
+	stock    api.StockService
 }
 
 func New(customer api.CustomerService,
-	catalog api.CatalogService) *Client {
+	catalog api.CatalogService,
+	stock api.StockService) *Client {
 	return &Client{
 		customer: customer,
 		catalog:  catalog,
+		stock:    stock,
 	}
 }
 
@@ -113,5 +116,18 @@ func (c *Client) Interact() {
 			itemInStockRsp.GetName())
 		logger.Infof("Received item in stock price: %+v",
 			itemInStockRsp.GetPrice())
+	}
+
+	//Get stock of item
+	stockOfItemRsp, err := c.stock.GetStockOfItem(context.Background(),
+		&api.StockOfItemRequest{
+			ItemID: itemID,
+		})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received stock of item ID1: %+v",
+			stockOfItemRsp.GetStock)
 	}
 }

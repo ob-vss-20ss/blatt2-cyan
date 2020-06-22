@@ -50,6 +50,12 @@ func (c *Stock) GetItem(ctx context.Context,
 func (c *Stock) GetStockOfItem(ctx context.Context,
 	req *api.StockOfItemRequest,
 	rsp *api.StockOfItemResponse) error {
+	c.AddItems()
+	itemID := req.ItemID
+	_, ok := c.items[itemID]
+	if ok {
+		rsp.Stock = c.items[itemID].Available
+	}
 	return nil
 }
 
