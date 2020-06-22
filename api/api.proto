@@ -10,10 +10,10 @@ service Catalog {
 }
 
 message Item {
-    uint32 itemID = 1;   
-	string name = 2;    
-    uint32 price = 3;
-    uint32 available = 4;
+    uint32 ArticleID = 1;   
+	string Name = 2;    
+    uint32 Price = 3;
+    uint32 Available = 4;
 }
 
 message ItemsInStockRequest {
@@ -21,17 +21,17 @@ message ItemsInStockRequest {
 }
 
 message ItemsInStockResponse {
-    repeated Item items = 1;
+    repeated Item Items = 1;
 }
 
 message ItemRequest {
-    uint32 ItemID = 1;
+    uint32 ArticleID = 1;
 }
 
 message ItemResponse {
-    uint32 itemID = 1;   
-	string name = 2;    
-	uint32 price = 3;
+    uint32 ArticleID = 1;   
+	string Name = 2;    
+	uint32 Price = 3;
 }
  
 //Stock-------------------------------------------------------------------------------
@@ -44,16 +44,16 @@ service Stock {
 }
 
 message StockOfItemRequest {
-    uint32 itemID = 1;
+    uint32 ArticleID = 1;
 }
 
 message StockOfItemResponse {
-    uint32 stock = 1;
+    uint32 Amount = 1;
 }
 
 message ReduceStockRequest {
-    uint32 itemID = 1;
-    uint32 amount = 2;
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
 }
 
 message ReduceStockResponse {
@@ -61,8 +61,8 @@ message ReduceStockResponse {
 }
 
 message IncreaseStockRequest {
-    uint32 itemID = 1;
-    uint32 amount = 2;
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
 }
 
 message IncreaseStockResponse {
@@ -77,31 +77,31 @@ service Customer {
 }
 
 message RegisterCustomerRequest {
-    uint32 customerID = 1;   
-	string name = 2;    
-	string address = 3; 
+    uint32 CustomerID = 1;   
+	string Name = 2;    
+	string Address = 3; 
 }
 
 message RegisterCustomerResponse {
-    uint32 customerID = 1; 
+    uint32 CustomerID = 1; 
 }
 
 message GetCustomerRequest {
-    uint32 customerID = 1;
+    uint32 CustomerID = 1;
 }
 
 message GetCustomerResponse {
-    uint32 customerID = 1;
-    string name = 2;
-    string address = 3;
+    uint32 CustomerID = 1;
+    string Name = 2;
+    string Address = 3;
 }
 
 message DeleteCustomerRequest {
-    uint32 customerID = 1;
+    uint32 CustomerID = 1;
 }
 
 message DeleteCustomerResponse{
-    uint32 customerID = 1; 
+    uint32 CustomerID = 1; 
 }
 
 //Order-------------------------------------------------------------------------------
@@ -114,37 +114,37 @@ service Order {
 
 message ArticleWithAmount {
     uint32 ArticleID = 1;
-    uint32 amount = 2;
+    uint32 Amount = 2;
 }
 
 message PlaceOrderRequest {
-    uint32 customerID = 1;
+    uint32 CustomerID = 1;
     repeated ArticleWithAmount articleList= 2;
 }
 
 message PlaceOrderResponse {
     uint32 OrderID = 1;
-    string message = 2;
+    string Message = 2;
 }
 
 message ReturnRequest {
-    uint32 customerID = 1;
-    uint32 orderID = 2;
-    bool replacement = 3;
-    repeated ArticleWithAmount articleList = 4;
+    uint32 CustomerID = 1;
+    uint32 OrderID = 2;
+    bool Replacement = 3;
+    repeated ArticleWithAmount ArticleList = 4;
 }
 
 message ReturnResponse {
-    string message= 1;
+    string Message= 1;
 }
 
 message CancelRequest {
-    uint32 customerID = 1;
-    uint32 orderID = 2;
+    uint32 CustomerID = 1;
+    uint32 OrderID = 2;
 }
 
 message CancelResponse {
-    string message = 2;
+    string Message = 2;
 }
 
 message GetOrderRequest {
@@ -152,8 +152,10 @@ message GetOrderRequest {
 }
 
 message GetOrderResponse {
-    uint32 customerID = 1;
-    repeated ArticleWithAmount articleList= 2;
+    uint32 CustomerID = 1;
+    repeated ArticleWithAmount ArticleList= 2;
+    bool Paid = 3;
+    bool Shipped = 4;
 }
 
 //Payment----------------------------------------------------------------------------
@@ -162,7 +164,7 @@ service Payment {
 }
 
 message PaymentRequest {
-   uint32 orderID = 1;
+   uint32 OrderID = 1;
 }
 
 message PaymentResponse {}
@@ -177,9 +179,9 @@ service Shipment {
 
 message Event {
 	// unique id
-	string id = 1;
+	string ID = 1;
 	// unix timestamp
-	int64 timestamp = 2;
+	int64 Timestamp = 2;
 	// message
-	string message = 3;
+	string Message = 3;
 }

@@ -17,8 +17,8 @@ func New() *Stock {
 }
 
 func (c *Stock) AddItems() {
-	c.items[1] = &api.Item{ItemID: 1, Name: "Tesla", Price: 100, Available: 3}
-	c.items[2] = &api.Item{ItemID: 2, Name: "Falcon9", Price: 1000, Available: 1}
+	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Available: 3}
+	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Available: 1}
 }
 
 func (c *Stock) GetItemsInStock(ctx context.Context,
@@ -37,12 +37,12 @@ func (c *Stock) GetItem(ctx context.Context,
 	req *api.ItemRequest,
 	rsp *api.ItemResponse) error {
 	c.AddItems()
-	itemID := req.ItemID
-	_, ok := c.items[itemID]
+	ArticleID := req.ArticleID
+	_, ok := c.items[ArticleID]
 	if ok {
-		rsp.ItemID = c.items[itemID].ItemID
-		rsp.Name = c.items[itemID].Name
-		rsp.Price = c.items[itemID].Price
+		rsp.ArticleID = c.items[ArticleID].ArticleID
+		rsp.Name = c.items[ArticleID].Name
+		rsp.Price = c.items[ArticleID].Price
 	}
 	return nil
 }

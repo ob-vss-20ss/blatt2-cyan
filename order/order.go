@@ -210,6 +210,8 @@ func (o *Order) GetOrder(ctx context.Context, req *api.GetOrderRequest, res *api
 
 	res.CustomerID = ordering.customerID
 	res.ArticleList = ordering.articleList
+	res.Paid = ordering.paid
+	res.Shipped = ordering.shipped
 
 	return nil
 }
@@ -223,7 +225,7 @@ func (o *Order) CalculatePrice(articleList []*api.ArticleWithAmount) uint32 {
 	price := uint32(0)
 	for i := range articleList {
 		catalogRsp, err := o.catalogService.GetItem(context.Background(), &api.ItemRequest{
-			ItemID: articleList[i].ArticleID,
+			ArticleID: articleList[i].ArticleID,
 		})
 
 		if err != nil {
@@ -239,14 +241,14 @@ func (o *Order) CalculatePrice(articleList []*api.ArticleWithAmount) uint32 {
 func (o *Order) CheckStock(articleList []*api.ArticleWithAmount) bool {
 	for i := range articleList {
 		stockRsp, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
-			ItemID: articleList[i].ArticleID,
+			ArticleID: articleList[i].ArticleID,
 		})
 
 		if err != nil {
 			panic(err)
 		}
 
-		if stockRsp.Stock < articleList[i].Amount {
+		if stockRsp.Amount < articleList[i].Amount {
 			return false
 		}
 	}
@@ -257,8 +259,8 @@ func (o *Order) CheckStock(articleList []*api.ArticleWithAmount) bool {
 func (o *Order) ReduceStock(articleList []*api.ArticleWithAmount) {
 	for i := range articleList {
 		_, err := o.stockService.ReduceStockOfItem(context.Background(), &api.ReduceStockRequest{
-			ItemID: articleList[i].ArticleID,
-			Amount: articleList[i].Amount,
+			ArticleID: articleList[i].ArticleID,
+			Amount:    articleList[i].Amount,
 		})
 
 		if err != nil {
@@ -270,8 +272,8 @@ func (o *Order) ReduceStock(articleList []*api.ArticleWithAmount) {
 func (o *Order) IncreaseStock(articleList []*api.ArticleWithAmount) {
 	for i := range articleList {
 		_, err := o.stockService.IncreaseStockOfItem(context.Background(), &api.IncreaseStockRequest{
-			ItemID: articleList[i].ArticleID,
-			Amount: articleList[i].Amount,
+			ArticleID: articleList[i].ArticleID,
+			Amount:    articleList[i].Amount,
 		})
 
 		if err != nil {

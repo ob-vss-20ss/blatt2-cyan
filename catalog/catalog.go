@@ -20,9 +20,9 @@ func New(stock api.StockService) *Catalog {
 }
 
 func (c *Catalog) AddItems() {
-	c.items[1] = &api.Item{ItemID: 1, Name: "Tesla", Price: 100, Available: 3}
-	c.items[2] = &api.Item{ItemID: 2, Name: "Falcon9", Price: 1000, Available: 1}
-	c.items[3] = &api.Item{ItemID: 3, Name: "FalconHeavy", Price: 1000, Available: 2}
+	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Available: 3}
+	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Available: 1}
+	c.items[3] = &api.Item{ArticleID: 3, Name: "FalconHeavy", Price: 1000, Available: 2}
 }
 
 func (c *Catalog) GetItemsInStock(ctx context.Context,
@@ -50,30 +50,30 @@ func (c *Catalog) GetItem(ctx context.Context,
 	rsp *api.ItemResponse) error {
 	c.AddItems()
 
-	itemID := req.ItemID
-	_, ok := c.items[itemID]
+	ArticleID := req.ArticleID
+	_, ok := c.items[ArticleID]
 	if ok {
 		itemInStockRsp, err := c.stock.GetItem(context.Background(),
 			&api.ItemRequest{
-				ItemID: itemID,
+				ArticleID: ArticleID,
 			})
 
 		if err != nil {
 			logger.Error(err)
 		} else {
 			logger.Infof("Received item in stock ID: %+v",
-				itemInStockRsp.GetItemID())
+				itemInStockRsp.GetArticleID())
 			logger.Infof("Received item in stock name: %+v",
 				itemInStockRsp.GetName())
 			logger.Infof("Received item in stock price: %+v",
 				itemInStockRsp.GetPrice())
 		}
 
-		rsp.ItemID = itemInStockRsp.GetItemID()
+		rsp.ArticleID = itemInStockRsp.GetArticleID()
 		rsp.Name = itemInStockRsp.GetName()
 		rsp.Price = itemInStockRsp.GetPrice()
 	}
-	//Einzelnes Item mit gegebener Id (req.ItemID) zurückgeben
+	//Einzelnes Item mit gegebener Id (req.ArticleID) zurückgeben
 
 	return nil
 }

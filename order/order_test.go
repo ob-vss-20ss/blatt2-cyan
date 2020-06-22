@@ -31,22 +31,6 @@ func TestExtractOrderIDFromMsg(t *testing.T) {
 	}
 }
 
-func TestCalculatPrice(t *testing.T) {
-	//erst mit catalog service möglich
-}
-
-func TestCheckStock(t *testing.T) {
-	//erst mit stock service möglich
-}
-
-func TestReduceStock(t *testing.T) {
-	//erst mit Stock service möglich
-}
-
-func TestIncreaseStock(t *testing.T) {
-	// erst mit stockservice möglich
-}
-
 // nolint:funlen,mnd
 func TestOrderContainsArticles(t *testing.T) {
 	logger.DefaultLogger = misc.Logger()
