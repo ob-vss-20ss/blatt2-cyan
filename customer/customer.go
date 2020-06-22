@@ -39,9 +39,9 @@ func (c *Customer) GetCustomer(ctx context.Context,
 		rsp.CustomerID = customer.customerID
 		rsp.Name = customer.name
 		rsp.Address = customer.address
-	} //else {
-	//CustomerNotFound?
-	//}
+	} else {
+		return fmt.Errorf("customer not registered")
+	}
 	return nil
 }
 

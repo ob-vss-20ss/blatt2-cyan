@@ -1,6 +1,9 @@
 package client1
 
 import (
+	"context"
+
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
 )
 
@@ -9,21 +12,136 @@ type Client struct {
 	catalog  api.CatalogService
 	order    api.OrderService
 	payment  api.PaymentService
+	shipment api.ShipmentService
 }
 
 func New(customer api.CustomerService,
 	catalog api.CatalogService,
 	order api.OrderService,
-	payment api.PaymentService) *Client {
+	payment api.PaymentService,
+	shipment api.ShipmentService) *Client {
 	return &Client{
 		customer: customer,
 		catalog:  catalog,
 		order:    order,
 		payment:  payment,
+		shipment: shipment,
 	}
 }
 
 func (c *Client) Interact() {
+	//Get items in stock-----------------------------------
+	//Beetrachten des Angebots
+	//Dem Kunden werden nur die Artikel angezeigt,
+	//die im Lader sind
+	itemsInStockRsp, err := c.catalog.GetItemsInStock(context.Background(),
+		&api.ItemsInStockRequest{})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received items in Stock: %+v",
+			itemsInStockRsp.GetItems())
+	}
+
+	//Get item in stock ID1-------------------------------
+	//Kunde wählt einen bestimmten Artikel
+	articleID := uint32(1)
+	itemInStockRsp, err := c.catalog.GetItem(context.Background(),
+		&api.ItemRequest{
+			ArticleID: articleID,
+		})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received item in stock ID1: %+v",
+			itemInStockRsp.GetArticleID())
+		logger.Infof("Received item in stock name: %+v",
+			itemInStockRsp.GetName())
+		logger.Infof("Received item in stock price: %+v",
+			itemInStockRsp.GetPrice())
+	}
+
+	//Place order ID1, ID2-------------------------------
+	//Kunde bestellt Artikel mit der ID1 und ID2
+	//Kunde ist noch nicht registriert
+	customerID := uint32(1)
+	articleListOrder := []*api.ArticleWithAmount{
+		{
+			ArticleID: 1,
+			Amount:    2,
+		},
+		{
+			ArticleID: 2,
+			Amount:    1,
+		},
+	}
+	placeOrderRsp, err := c.order.PlaceOrder(context.Background(),
+		&api.PlaceOrderRequest{
+			CustomerID:  customerID,
+			ArticleList: articleListOrder,
+		})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		//logger.Infof("Received order ID: %+v",
+		//placeOrderRsp.GetOrderID())
+		logger.Infof("Received message: %+v",
+			placeOrderRsp.GetMessage())
+	}
+
+	//Register customer ID1------------------------------
+	//Kunde registriert sich
+	name := "Rebel"
+	address := "Grasmeierstraße, 15"
+
+	registerRsp, err := c.customer.RegisterCustomer(context.Background(),
+		&api.RegisterCustomerRequest{
+			Name:    name,
+			Address: address,
+		})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Infof("Received added customerID: %+v",
+			registerRsp.GetCustomerID())
+	}
+
+	//Place order ID1, ID2-------------------------------
+	//Kunde bestellt Artikel mit der ID1 und ID2
+	//Kunde ist bereits registriert
+	placeOrderRegisteredRsp, err := c.order.PlaceOrder(context.Background(),
+		&api.PlaceOrderRequest{
+			CustomerID:  customerID,
+			ArticleList: articleListOrder,
+		})
+	var orderID uint32
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		orderID = placeOrderRegisteredRsp.GetOrderID()
+		logger.Infof("Received order ID: %+v",
+			placeOrderRegisteredRsp.GetOrderID())
+		logger.Infof("Received message: %+v",
+			placeOrderRegisteredRsp.GetMessage())
+	}
+
+	//Receive payment-----------------------------------
+	//Kunde bezahlt die Bestellung
+	paymentRsp, err := c.payment.ReceivePayment(context.Background(),
+		&api.PaymentRequest{
+			OrderID: orderID,
+		})
+
+	if err != nil {
+		logger.Error(err)
+	} else {
+		logger.Info(paymentRsp)
+	}
 }
 
 /*func (c *Client) Interact() {

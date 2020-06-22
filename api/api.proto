@@ -121,7 +121,7 @@ message ArticleWithAmount {
 
 message PlaceOrderRequest {
     uint32 CustomerID = 1;
-    repeated ArticleWithAmount articleList= 2;
+    repeated ArticleWithAmount articleList = 2;
 }
 
 message PlaceOrderResponse {
