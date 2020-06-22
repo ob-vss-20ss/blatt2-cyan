@@ -1,4 +1,4 @@
-package apitestOrder
+package apitestorder
 
 /*
 import (
@@ -22,7 +22,8 @@ type orderTest struct {
 	stockService    api.StockService
 }
 
-func New(orderService api.OrderService, paymentService api.PaymentService, shipmentService api.ShipmentService, stockService api.StockService) *orderTest {
+func New(orderService api.OrderService, paymentService api.PaymentService,
+	shipmentService api.ShipmentService, stockService api.StockService) *orderTest {
 	return &orderTest{
 		orderService:    orderService,
 		paymentService:  paymentService,
@@ -33,7 +34,7 @@ func New(orderService api.OrderService, paymentService api.PaymentService, shipm
 
 func (o *orderTest) TestCalculatPrice() {
 	//erst mit catalog service möglich
-	placeholer := uint32(0)
+	placeholder := uint32(0)
 
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -58,23 +59,23 @@ func (o *orderTest) TestCalculatPrice() {
 
 	var articleList = []*api.ArticleWithAmount{
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 	}
 
 	price := orderService.CalculatePrice(articleList)
 
-	if price != placeholer {
+	if price != placeholder {
 		panic(fmt.Errorf("expected price to be placholder, but was %d", price))
 	}
 
 	//amount erhöhen
-	articleList[0].Amount = placeholer
+	articleList[0].Amount = placeholder
 
 	if !orderService.CheckStock(articleList) {
 		panic(fmt.Errorf("expected return value to be false, but was true"))
@@ -83,7 +84,7 @@ func (o *orderTest) TestCalculatPrice() {
 
 func (o *orderTest) TestCheckStock() {
 	//erst mit stock service möglich
-	placeholer := uint32(0)
+	placeholder := uint32(0)
 
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -108,12 +109,12 @@ func (o *orderTest) TestCheckStock() {
 
 	var articleList = []*api.ArticleWithAmount{
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 	}
 
@@ -122,7 +123,7 @@ func (o *orderTest) TestCheckStock() {
 	}
 
 	//amount erhöhen
-	articleList[0].Amount = placeholer
+	articleList[0].Amount = placeholder
 
 	if !orderService.CheckStock(articleList) {
 		panic(fmt.Errorf("expected return value to be false, but was true"))
@@ -131,7 +132,7 @@ func (o *orderTest) TestCheckStock() {
 
 func (o *orderTest) TestReduceStock() {
 	// erst mit stockservice möglich
-	placeholer := uint32(0)
+	placeholder := uint32(0)
 
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -156,45 +157,49 @@ func (o *orderTest) TestReduceStock() {
 
 	var articleList = []*api.ArticleWithAmount{
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 	}
 
 	orderService.ReduceStock(articleList)
 
-	resFirstItem, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
-		ArticleID: placeholer,
+	resFirstItem, err := o.stockService.GetStockOfItem(
+		context.Background(), &api.StockOfItemRequest{
+		ArticleID: placeholder,
 	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	resSecondItem, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
-		ArticleID: placeholer,
+	resSecondItem, err := o.stockService.GetStockOfItem(
+		context.Background(), &api.StockOfItemRequest{
+		ArticleID: placeholder,
 	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	if resFirstItem.Amount != placeholer {
-		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder, but had an amount of %d", placeholer, resFirstItem.Amount))
+	if resFirstItem.Amount != placeholder {
+		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder,
+		but had an amount of %d", placeholder, resFirstItem.Amount))
 	}
 
-	if resSecondItem.Amount != placeholer {
-		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder, but had an amount of %d", placeholer, resSecondItem.Amount))
+	if resSecondItem.Amount != placeholder {
+		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder,
+		but had an amount of %d", placeholder, resSecondItem.Amount))
 	}
 }
 
 func (o *orderTest) TestIncreaseStock() {
 	// erst mit stockservice möglich
-	placeholer := uint32(0)
+	placeholder := uint32(0)
 
 	logger.DefaultLogger = misc.Logger()
 	registry := etcdv3.NewRegistry()
@@ -219,19 +224,19 @@ func (o *orderTest) TestIncreaseStock() {
 
 	var articleList = []*api.ArticleWithAmount{
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 		{
-			ArticleID: placeholer,
-			Amount:    placeholer,
+			ArticleID: placeholder,
+			Amount:    placeholder,
 		},
 	}
 
 	orderService.IncreaseStock(articleList)
 
 	resFirstItem, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
-		ArticleID: placeholer,
+		ArticleID: placeholder,
 	})
 
 	if err != nil {
@@ -239,19 +244,21 @@ func (o *orderTest) TestIncreaseStock() {
 	}
 
 	resSecondItem, err := o.stockService.GetStockOfItem(context.Background(), &api.StockOfItemRequest{
-		ArticleID: placeholer,
+		ArticleID: placeholder,
 	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	if resFirstItem.Amount != placeholer {
-		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder, but had an amount of %d", placeholer, resFirstItem.Amount))
+	if resFirstItem.Amount != placeholder {
+		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder,
+		but had an amount of %d", placeholder, resFirstItem.Amount))
 	}
 
-	if resSecondItem.Amount != placeholer {
-		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder, but had an amount of %d", placeholer, resSecondItem.Amount))
+	if resSecondItem.Amount != placeholder {
+		panic(fmt.Errorf("item with articleID %d was expected to have an amount of place holder,
+		but had an amount of %d", placeholder, resSecondItem.Amount))
 	}
 }
 
@@ -307,7 +314,8 @@ func (o *orderTest) TestProcess() {
 		},
 	}
 
-	resPlaceOrder, err := o.orderService.PlaceOrder(context.Background(), &api.PlaceOrderRequest{
+	resPlaceOrder, err := o.orderService.PlaceOrder(
+		context.Background(), &api.PlaceOrderRequest{
 		CustomerID:  1,
 		ArticleList: articleList,
 	})
@@ -316,13 +324,15 @@ func (o *orderTest) TestProcess() {
 		panic(err)
 	}
 
-	_, err = o.paymentService.ReceivePayment(context.Background(), &api.PaymentRequest{
+	_, err = o.paymentService.ReceivePayment(
+		context.Background(), &api.PaymentRequest{
 		OrderID: resPlaceOrder.OrderID,
 	})
 
 	time.Sleep(1000)
 
-	resGetOrder, err := o.orderService.GetOrder(context.Background(), &api.GetOrderRequest{
+	resGetOrder, err := o.orderService.GetOrder(
+		context.Background(), &api.GetOrderRequest{
 		OrderID: resPlaceOrder.OrderID,
 	})
 
