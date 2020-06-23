@@ -38,7 +38,8 @@ func (c *Client) Interact() {
 	logger.Info(resOrder)
 
 	resCancel, err := c.orderService.CancelOrder(context.Background(), &api.CancelRequest{
-		OrderID: resOrder.OrderID,
+		CustomerID: 1,
+		OrderID:    resOrder.OrderID,
 	})
 
 	if err != nil {

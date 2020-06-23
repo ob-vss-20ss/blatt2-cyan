@@ -5,7 +5,7 @@ import (
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
-	"github.com/ob-vss-20ss/blatt2-cyan/client3"
+	"github.com/ob-vss-20ss/blatt2-cyan/client4"
 	"github.com/ob-vss-20ss/blatt2-cyan/misc"
 )
 
@@ -20,7 +20,7 @@ func main() {
 	)
 	service.Init()
 
-	client := client3.New(api.NewOrderService("order", service.Client()),
+	client := client4.New(api.NewOrderService("order", service.Client()),
 		api.NewPaymentService("payment", service.Client()))
 
 	client.Interact()

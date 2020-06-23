@@ -17,8 +17,9 @@ func New() *Stock {
 }
 
 func (c *Stock) AddItems() {
-	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Amount: 3}
-	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Amount: 1}
+	c.items[1] = &api.Item{ArticleID: 1, Name: "Tesla", Price: 100, Amount: 20}
+	c.items[2] = &api.Item{ArticleID: 2, Name: "Falcon9", Price: 1000, Amount: 20}
+	c.items[3] = &api.Item{ArticleID: 3, Name: "Falcon Heavy", Price: 1000, Amount: 20}
 }
 
 func (c *Stock) GetItemsInStock(ctx context.Context,

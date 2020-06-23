@@ -132,6 +132,11 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	}
 
 	//Preis ausrechnen (catalog Service) und die Summe in der Antwort an den Client schicken
+	if !req.Replacement {
+		res.Message = fmt.Sprint("Hier mit erstatten wir wie gewünscht den Kaufpreis:", o.CalculatePrice(req.ArticleList))
+		return nil
+	}
+
 	var replacementSuccess bool
 	if req.Replacement {
 		replacementSuccess = o.CreateReplacement(req)
@@ -142,10 +147,6 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	} else {
 		res.Message = fmt.Sprintf("Der angeforderte Ersatz ist auf dem mit der Bestellnummer %d auf dem Weg", o.key)
 		o.key++
-	}
-
-	if !req.Replacement {
-		res.Message = fmt.Sprint("Hier mit erstatten wir wie gewünscht den Kaufpreis:", o.CalculatePrice(req.ArticleList))
 	}
 
 	//Artikel aus Bestellung bzw. Bestellung löschen
@@ -185,8 +186,14 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 		return fmt.Errorf("order already shipped")
 	}
 
+	//Prüfen ob bezahlt
+	if ordering.paid {
+		res.Message = "Ihre Bestellung konnte storniert werden."
+		return nil
+	}
+
 	//Preis ausrechnen (catalog Service ansprechen), an Client in Antwort senden
-	o.CalculatePrice(ordering.articleList)
+	price := o.CalculatePrice(ordering.articleList)
 
 	//Bestände im StockService erhöhen
 	o.IncreaseStock(ordering.articleList)
@@ -194,6 +201,7 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 	//Bestellung löschen
 	delete(o.orderMap, req.OrderID)
 
+	res.Message = fmt.Sprintf("Ihre Bestellung konnte storniert werden. Kaufpreis von %d wird ihnen hiermit erstattet.", price)
 	return nil
 }
 
@@ -328,7 +336,7 @@ func (o *Order) CreateReplacement(req *api.ReturnRequest) bool {
 			OrderID: o.key,
 		})
 
-		return err == nil
+		return err != nil
 	}
 
 	return false

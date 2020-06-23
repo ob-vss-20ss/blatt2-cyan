@@ -63,7 +63,7 @@ func (c *Client) Interact() {
 	resReturn, err := c.orderService.ReturnItem(context.Background(), &api.ReturnRequest{
 		CustomerID:  1,
 		OrderID:     resOrder.OrderID,
-		Replacement: true,
+		Replacement: false,
 		ArticleList: articleListReturn,
 	})
 
