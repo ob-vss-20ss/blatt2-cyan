@@ -69,8 +69,8 @@ func (p *Shipment) Process(ctx context.Context, event *api.Event) error {
 		logger.Info(msg)
 		return fmt.Errorf("customerID not found")
 	}
-
-	logger.Info("Sending order to\n%v\n%v", customerRes.Name, customerRes.Address)
+	msg = fmt.Sprintf("Sending order to\n%v\n%v", customerRes.Name, customerRes.Address)
+	logger.Info(msg)
 
 	uuid, err := uuid.NewRandom()
 
