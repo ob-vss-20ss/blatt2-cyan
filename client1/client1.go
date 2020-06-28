@@ -31,9 +31,9 @@ func New(customer api.CustomerService,
 
 func (c *Client) Interact() {
 	//Get items in stock-----------------------------------
-	//Beetrachten des Angebots
+	//Betrachten des Angebots
 	//Dem Kunden werden nur die Artikel angezeigt,
-	//die im Lader sind
+	//die im Lager sind
 	itemsInStockRsp, err := c.catalog.GetItemsInStock(context.Background(),
 		&api.ItemsInStockRequest{})
 
@@ -41,19 +41,23 @@ func (c *Client) Interact() {
 		logger.Error(err)
 	} else {
 		logger.Infof("Received items in Stock: %+v",
-			itemsInStockRsp.GetItems())
+			itemsInStockRsp.GetCatalogItems())
 	}
 
-	//Get item in stock ID1-------------------------------
-	//Kunde wählt einen bestimmten Artikel
-	articleID := uint32(1)
+	//Get item in stock ID5. Non-existent ID-------------------------------
+	//Der Kunde vertippt sich und gibt eine
+	//nichtexistierende ID ein
+	articleID5 := uint32(5)
 	itemInStockRsp, err := c.catalog.GetItem(context.Background(),
 		&api.ItemRequest{
-			ArticleID: articleID,
+			ArticleID: articleID5,
 		})
 
+	logger.Info(itemInStockRsp)
+	logger.Info(err)
+
 	if err != nil {
-		logger.Error(err)
+		logger.Infof("Item is not available")
 	} else {
 		logger.Infof("Received item in stock ID1: %+v",
 			itemInStockRsp.GetArticleID())
@@ -61,6 +65,58 @@ func (c *Client) Interact() {
 			itemInStockRsp.GetName())
 		logger.Infof("Received item in stock price: %+v",
 			itemInStockRsp.GetPrice())
+		logger.Infof("Received item in stock available: %+v",
+			itemInStockRsp.GetAmount())
+	}
+
+	//Get item in stock ID2. No items in stock-------------------------------
+	//Der Kunde wählt den Artikel,
+	//der im Lager nicht vorhanden ist
+	articleID2 := uint32(2)
+	itemInStockRsp, err = c.catalog.GetItem(context.Background(),
+		&api.ItemRequest{
+			ArticleID: articleID2,
+		})
+
+	logger.Info(itemInStockRsp)
+	logger.Info(err)
+
+	if err != nil {
+		logger.Infof("Item is not available")
+	} else {
+		logger.Infof("Received item in stock ID1: %+v",
+			itemInStockRsp.GetArticleID())
+		logger.Infof("Received item in stock name: %+v",
+			itemInStockRsp.GetName())
+		logger.Infof("Received item in stock price: %+v",
+			itemInStockRsp.GetPrice())
+		logger.Infof("Received item in stock available: %+v",
+			itemInStockRsp.GetAmount())
+	}
+
+	//Get item in stock ID1-------------------------------
+	//Der Kunde wählt einen bestimmten Artikel,
+	//der im Lager vorhanden ist
+	articleID1 := uint32(1)
+	itemInStockRsp, err = c.catalog.GetItem(context.Background(),
+		&api.ItemRequest{
+			ArticleID: articleID1,
+		})
+
+	logger.Info(itemInStockRsp)
+	logger.Info(err)
+
+	if err != nil {
+		logger.Infof("Item is not available")
+	} else {
+		logger.Infof("Received item in stock ID1: %+v",
+			itemInStockRsp.GetArticleID())
+		logger.Infof("Received item in stock name: %+v",
+			itemInStockRsp.GetName())
+		logger.Infof("Received item in stock price: %+v",
+			itemInStockRsp.GetPrice())
+		logger.Infof("Received item in stock available: %+v",
+			itemInStockRsp.GetAmount())
 	}
 
 	//Place order ID1, ID2-------------------------------

@@ -42,7 +42,7 @@ func NewCatalogEndpoints() []*api.Endpoint {
 // Client API for Catalog service
 
 type CatalogService interface {
-	GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error)
+	GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInCatalogResponse, error)
 	GetItem(ctx context.Context, in *ItemRequest, opts ...client.CallOption) (*ItemResponse, error)
 }
 
@@ -58,9 +58,9 @@ func NewCatalogService(name string, c client.Client) CatalogService {
 	}
 }
 
-func (c *catalogService) GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error) {
+func (c *catalogService) GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInCatalogResponse, error) {
 	req := c.c.NewRequest(c.name, "Catalog.GetItemsInStock", in)
-	out := new(ItemsInStockResponse)
+	out := new(ItemsInCatalogResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -81,13 +81,13 @@ func (c *catalogService) GetItem(ctx context.Context, in *ItemRequest, opts ...c
 // Server API for Catalog service
 
 type CatalogHandler interface {
-	GetItemsInStock(context.Context, *ItemsInStockRequest, *ItemsInStockResponse) error
+	GetItemsInStock(context.Context, *ItemsInStockRequest, *ItemsInCatalogResponse) error
 	GetItem(context.Context, *ItemRequest, *ItemResponse) error
 }
 
 func RegisterCatalogHandler(s server.Server, hdlr CatalogHandler, opts ...server.HandlerOption) error {
 	type catalog interface {
-		GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error
+		GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInCatalogResponse) error
 		GetItem(ctx context.Context, in *ItemRequest, out *ItemResponse) error
 	}
 	type Catalog struct {
@@ -101,7 +101,7 @@ type catalogHandler struct {
 	CatalogHandler
 }
 
-func (h *catalogHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error {
+func (h *catalogHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInCatalogResponse) error {
 	return h.CatalogHandler.GetItemsInStock(ctx, in, out)
 }
 
@@ -119,7 +119,7 @@ func NewStockEndpoints() []*api.Endpoint {
 
 type StockService interface {
 	GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, opts ...client.CallOption) (*ItemsInStockResponse, error)
-	GetItem(ctx context.Context, in *ItemRequest, opts ...client.CallOption) (*ItemResponse, error)
+	GetItem(ctx context.Context, in *ItemRequest, opts ...client.CallOption) (*StockItem, error)
 	GetStockOfItem(ctx context.Context, in *StockOfItemRequest, opts ...client.CallOption) (*StockOfItemResponse, error)
 	ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, opts ...client.CallOption) (*ReduceStockResponse, error)
 	IncreaseStockOfItem(ctx context.Context, in *IncreaseStockRequest, opts ...client.CallOption) (*IncreaseStockResponse, error)
@@ -147,9 +147,9 @@ func (c *stockService) GetItemsInStock(ctx context.Context, in *ItemsInStockRequ
 	return out, nil
 }
 
-func (c *stockService) GetItem(ctx context.Context, in *ItemRequest, opts ...client.CallOption) (*ItemResponse, error) {
+func (c *stockService) GetItem(ctx context.Context, in *ItemRequest, opts ...client.CallOption) (*StockItem, error) {
 	req := c.c.NewRequest(c.name, "Stock.GetItem", in)
-	out := new(ItemResponse)
+	out := new(StockItem)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -191,7 +191,7 @@ func (c *stockService) IncreaseStockOfItem(ctx context.Context, in *IncreaseStoc
 
 type StockHandler interface {
 	GetItemsInStock(context.Context, *ItemsInStockRequest, *ItemsInStockResponse) error
-	GetItem(context.Context, *ItemRequest, *ItemResponse) error
+	GetItem(context.Context, *ItemRequest, *StockItem) error
 	GetStockOfItem(context.Context, *StockOfItemRequest, *StockOfItemResponse) error
 	ReduceStockOfItem(context.Context, *ReduceStockRequest, *ReduceStockResponse) error
 	IncreaseStockOfItem(context.Context, *IncreaseStockRequest, *IncreaseStockResponse) error
@@ -200,7 +200,7 @@ type StockHandler interface {
 func RegisterStockHandler(s server.Server, hdlr StockHandler, opts ...server.HandlerOption) error {
 	type stock interface {
 		GetItemsInStock(ctx context.Context, in *ItemsInStockRequest, out *ItemsInStockResponse) error
-		GetItem(ctx context.Context, in *ItemRequest, out *ItemResponse) error
+		GetItem(ctx context.Context, in *ItemRequest, out *StockItem) error
 		GetStockOfItem(ctx context.Context, in *StockOfItemRequest, out *StockOfItemResponse) error
 		ReduceStockOfItem(ctx context.Context, in *ReduceStockRequest, out *ReduceStockResponse) error
 		IncreaseStockOfItem(ctx context.Context, in *IncreaseStockRequest, out *IncreaseStockResponse) error
@@ -220,7 +220,7 @@ func (h *stockHandler) GetItemsInStock(ctx context.Context, in *ItemsInStockRequ
 	return h.StockHandler.GetItemsInStock(ctx, in, out)
 }
 
-func (h *stockHandler) GetItem(ctx context.Context, in *ItemRequest, out *ItemResponse) error {
+func (h *stockHandler) GetItem(ctx context.Context, in *ItemRequest, out *StockItem) error {
 	return h.StockHandler.GetItem(ctx, in, out)
 }
 

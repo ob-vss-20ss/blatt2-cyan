@@ -5,23 +5,22 @@ option go_package = ".;api";
 
 //Catalog---------------------------------------------------------------------------
 service Catalog {
-    rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
+    rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInCatalogResponse) {}
     rpc GetItem(ItemRequest) returns (ItemResponse) {}
 }
 
-message Item {
+message CatalogItem {
     uint32 ArticleID = 1;   
 	string Name = 2;    
     uint32 Price = 3;
-    uint32 Amount = 4;
 }
 
 message ItemsInStockRequest {
 
 }
 
-message ItemsInStockResponse {
-    repeated Item Items = 1;
+message ItemsInCatalogResponse {
+    repeated CatalogItem CatalogItems = 1;
 }
 
 message ItemRequest {
@@ -31,16 +30,26 @@ message ItemRequest {
 message ItemResponse {
     uint32 ArticleID = 1;   
 	string Name = 2;    
-	uint32 Price = 3;
+    uint32 Price = 3;
+    uint32 Amount = 4;
 }
  
 //Stock-------------------------------------------------------------------------------
 service Stock {
     rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
-    rpc GetItem(ItemRequest) returns (ItemResponse) {}
+    rpc GetItem(ItemRequest) returns (StockItem) {}
     rpc GetStockOfItem(StockOfItemRequest) returns (StockOfItemResponse) {}
     rpc ReduceStockOfItem(ReduceStockRequest) returns (ReduceStockResponse) {}
     rpc IncreaseStockOfItem(IncreaseStockRequest) returns (IncreaseStockResponse) {}
+}
+
+message StockItem {
+    uint32 ArticleID = 1;   
+    uint32 Amount = 2;
+}
+
+message ItemsInStockResponse {
+    repeated StockItem StockItems = 1;
 }
 
 message StockOfItemRequest {
