@@ -29,6 +29,7 @@ func New(customer api.CustomerService,
 	}
 }
 
+//nolint:mnd
 func (c *Client) Interact() {
 	//Get items in stock-----------------------------------
 	//Betrachten des Angebots
