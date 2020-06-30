@@ -32,16 +32,16 @@ type StockItem struct {
 }
 
 func (c *Stock) InitData() {
-	var itemsJson []StockItem
+	var itemsJSON []StockItem
 	file, _ := ioutil.ReadFile("data/stock.json")
-	if err := json.Unmarshal([]byte(file), &itemsJson); err != nil {
+	if err := json.Unmarshal([]byte(file), &itemsJSON); err != nil {
 		panic(err)
 	}
-	for i, item := range itemsJson {
+	for i, item := range itemsJSON {
 		fmt.Printf("item from list, %v, %v, %v\n", i, item.ArticleID, item.Amount)
 	}
-	for j := uint32(0); j < uint32(len(itemsJson)); j++ {
-		c.items[j+1] = &api.StockItem{ArticleID: itemsJson[j].ArticleID, Amount: itemsJson[j].Amount}
+	for j := uint32(0); j < uint32(len(itemsJSON)); j++ {
+		c.items[j+1] = &api.StockItem{ArticleID: itemsJSON[j].ArticleID, Amount: itemsJSON[j].Amount}
 	}
 	for i, item := range c.items {
 		fmt.Printf("item from map, %v, %v, %v\n", i, item.ArticleID, item.Amount)
@@ -66,7 +66,6 @@ func (c *Stock) GetItemsInStock(ctx context.Context,
 func (c *Stock) GetItem(ctx context.Context,
 	req *api.ItemRequest,
 	rsp *api.StockItem) error {
-
 	ArticleID := req.ArticleID
 
 	logger.Infof("Got article ID: %d\n", ArticleID)
@@ -76,7 +75,7 @@ func (c *Stock) GetItem(ctx context.Context,
 		rsp.ArticleID = c.items[ArticleID].ArticleID
 		rsp.Amount = c.items[ArticleID].Amount
 	} else {
-		return fmt.Errorf("Item is not available in stock.")
+		return fmt.Errorf("item is not available in stock.")
 	}
 
 	/*_, ok := c.items[ArticleID]
@@ -92,7 +91,6 @@ func (c *Stock) GetItem(ctx context.Context,
 func (c *Stock) GetStockOfItem(ctx context.Context,
 	req *api.StockOfItemRequest,
 	rsp *api.StockOfItemResponse) error {
-
 	itemID := req.ArticleID
 	_, ok := c.items[itemID]
 	if ok {

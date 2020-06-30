@@ -23,6 +23,7 @@ func New(customer api.CustomerService,
 	}
 }
 
+//nolint:mnd
 func (c *Client) Interact() {
 	//Register customer ID1
 	//customerID := uint32(1)

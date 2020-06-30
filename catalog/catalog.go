@@ -29,16 +29,16 @@ type CatalogItem struct {
 }
 
 func (c *Catalog) InitData() {
-	var itemsJson []CatalogItem
+	var itemsJSON []CatalogItem
 	file, _ := ioutil.ReadFile("data/catalog.json")
-	if err := json.Unmarshal([]byte(file), &itemsJson); err != nil {
+	if err := json.Unmarshal([]byte(file), &itemsJSON); err != nil {
 		panic(err)
 	}
-	for i, item := range itemsJson {
+	for i, item := range itemsJSON {
 		fmt.Printf("item from list, %v, %v, %v, %v\n", i, item.ArticleID, item.Name, item.Price)
 	}
-	for j := uint32(0); j < uint32(len(itemsJson)); j++ {
-		c.items[j+1] = &api.CatalogItem{ArticleID: itemsJson[j].ArticleID, Name: itemsJson[j].Name, Price: itemsJson[j].Price}
+	for j := uint32(0); j < uint32(len(itemsJSON)); j++ {
+		c.items[j+1] = &api.CatalogItem{ArticleID: itemsJSON[j].ArticleID, Name: itemsJSON[j].Name, Price: itemsJSON[j].Price}
 	}
 	for i, item := range c.items {
 		fmt.Printf("item from map, %v, %v, %v, %v\n", i, item.ArticleID, item.Name, item.Price)
@@ -55,7 +55,6 @@ func (c *Catalog) GetItemsInStock(ctx context.Context,
 	req *api.ItemsInStockRequest,
 	rsp *api.ItemsInCatalogResponse) error {
 	//c.AddItems()
-
 	itemsInStockRsp, err := c.stock.GetItemsInStock(context.Background(),
 		&api.ItemsInStockRequest{})
 
@@ -84,7 +83,6 @@ func (c *Catalog) GetItemsInStock(ctx context.Context,
 func (c *Catalog) GetItem(ctx context.Context,
 	req *api.ItemRequest,
 	rsp *api.ItemResponse) error {
-
 	ArticleID := req.ArticleID
 
 	logger.Infof("ArticleID from client: %d\n", ArticleID)
@@ -100,7 +98,7 @@ func (c *Catalog) GetItem(ctx context.Context,
 		logger.Infof("Got error from stock: %+v", err)
 
 		if err != nil {
-			return fmt.Errorf("Item is not available in stock")
+			return fmt.Errorf("item is not available in stock")
 		}
 
 		logger.Infof("Received item in stock ID: %+v",
@@ -111,9 +109,8 @@ func (c *Catalog) GetItem(ctx context.Context,
 		rsp.Name = c.items[itemInStockRsp.ArticleID].Name
 		rsp.Price = c.items[itemInStockRsp.ArticleID].Price
 		rsp.Amount = itemInStockRsp.Amount
-
 	} else {
-		return fmt.Errorf("Item is not available. Non-existent ID")
+		return fmt.Errorf("item is not available, non-existent ID")
 	}
 	return nil
 }
