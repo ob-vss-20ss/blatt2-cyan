@@ -7,3 +7,165 @@ steps:
       image: golangci/golangci-lint
       commands:
           - golangci-lint run
+
+---
+kind: pipeline
+type: docker
+name: stockdocker
+
+steps:
+    - name: docker (stock-service)
+      image: plugins/docker
+      settings:
+          dockerfile: stock/service/Dockerfile
+          username:
+              from_secret: gh_username
+          password:
+              from_secret: gh_token
+          registry: docker.pkg.github.com
+          repo: docker.pkg.github.com/vesose/example-micro/stock
+      when:
+          branch:
+              - master
+              - develop
+          event:
+              exclude:
+                  - pull_request
+
+depends_on:
+    - lint
+
+---
+kind: pipeline
+type: docker
+name: catalogdocker
+
+steps:
+    - name: docker (catalog-service)
+      image: plugins/docker
+      settings:
+          dockerfile: catalog/service/Dockerfile
+          username:
+              from_secret: gh_username
+          password:
+              from_secret: gh_token
+          registry: docker.pkg.github.com
+          repo: docker.pkg.github.com/vesose/example-micro/catalog
+      when:
+          branch:
+              - master
+              - develop
+          event:
+              exclude:
+                  - pull_request
+
+depends_on:
+    - lint
+
+---
+kind: pipeline
+type: docker
+name: customerdocker
+
+steps:
+    - name: docker (customer-service)
+      image: plugins/docker
+      settings:
+          dockerfile: customer/service/Dockerfile
+          username:
+              from_secret: gh_username
+          password:
+              from_secret: gh_token
+          registry: docker.pkg.github.com
+          repo: docker.pkg.github.com/vesose/example-micro/customer
+      when:
+          branch:
+              - master
+              - develop
+          event:
+              exclude:
+                  - pull_request
+
+depends_on:
+    - lint  
+
+---
+kind: pipeline
+type: docker
+name: orderdocker
+
+steps:
+    - name: docker (order-service)
+      image: plugins/docker
+      settings:
+          dockerfile: order/service/Dockerfile
+          username:
+              from_secret: gh_username
+          password:
+              from_secret: gh_token
+          registry: docker.pkg.github.com
+          repo: docker.pkg.github.com/vesose/example-micro/order
+      when:
+          branch:
+              - master
+              - develop
+          event:
+              exclude:
+                  - pull_request
+
+depends_on:
+    - lint  
+    
+---
+kind: pipeline
+type: docker
+name: paymentdocker
+
+steps:
+    - name: docker (payment-service)
+      image: plugins/docker
+      settings:
+          dockerfile: payment/service/Dockerfile
+          username:
+              from_secret: gh_username
+          password:
+              from_secret: gh_token
+          registry: docker.pkg.github.com
+          repo: docker.pkg.github.com/vesose/example-micro/payment
+      when:
+          branch:
+              - master
+              - develop
+          event:
+              exclude:
+                  - pull_request
+
+depends_on:
+    - lint     
+
+---
+kind: pipeline
+type: docker
+name: shipmentdocker
+
+steps:
+    - name: docker (order-service)
+      image: plugins/docker
+      settings:
+          dockerfile: shipment/service/Dockerfile
+          username:
+              from_secret: gh_username
+          password:
+              from_secret: gh_token
+          registry: docker.pkg.github.com
+          repo: docker.pkg.github.com/vesose/example-micro/shipment
+      when:
+          branch:
+              - master
+              - develop
+          event:
+              exclude:
+                  - pull_request
+
+depends_on:
+    - lint  

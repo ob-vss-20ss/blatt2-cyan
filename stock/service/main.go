@@ -25,6 +25,8 @@ func main() {
 
 	stockService := stock.New()
 
+	stockService.InitData()
+
 	if err := api.RegisterStockHandler(service.Server(),
 		stockService); err != nil {
 		logger.Fatal(err)

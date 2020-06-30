@@ -1,0 +1,86 @@
+version: "3"
+services:
+    etcd:
+        image: "bitnami/etcd:latest"
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+            - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    nats:
+        image: nats
+    redis:
+        image: "bitnami/redis:latest"
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+    catalog-service:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379
+        links:
+            - etcd
+    stock-service:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379
+        links:
+            - etcd
+    customer-service:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379
+        links:
+            - etcd
+    order-service:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
+        links:
+            - etcd
+            - nats
+    payment-service:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
+        links:
+            - etcd
+            - nats 
+    shipment-service:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
+        links:
+            - etcd
+            - nats  
+    client1:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd  
+    client2:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd  
+    client3:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd
+    client4:
+        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd             

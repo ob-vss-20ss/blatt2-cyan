@@ -1,22 +1,16 @@
 [
     {
-        "itemID": 1,
-        "name": "Tokyo Bay Watch",
-        "price": "150",
-        "available": "23"
-    }, 
-
-    {
-        "itemID": 3,
-        "name": "Ecco Shoes",
-        "price": "200",
-        "available": "19"
+        "articleID": 1,
+        "amount": 20
     },
 
     {
-        "itemID": 5,
-        "name": "Massimo Dutti Coat",
-        "price": "50",
-        "available": "8"
+        "articleID": 2,
+        "amount": 0
+    }, 
+
+    {
+        "articleID": 3,
+        "amount": 20
     }
 ]

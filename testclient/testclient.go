@@ -88,7 +88,6 @@ func (c *Client) Interact() {
 		logger.Infof("Received deleted customerID: %+v",
 			deleteCustomerRsp.GetCustomerID())
 	}
-
 	//Get items in stock
 	itemsInStockRsp, err := c.catalog.GetItemsInStock(context.Background(),
 		&api.ItemsInStockRequest{})
@@ -97,9 +96,8 @@ func (c *Client) Interact() {
 		logger.Error(err)
 	} else {
 		logger.Infof("Received items in Stock: %+v",
-			itemsInStockRsp.GetItems())
+			itemsInStockRsp.GetCatalogItems())
 	}
-
 	//Get item in stock ID1
 	articleID := uint32(1)
 	itemInStockRsp, err := c.catalog.GetItem(context.Background(),
@@ -108,7 +106,7 @@ func (c *Client) Interact() {
 		})
 
 	if err != nil {
-		logger.Error(err)
+		logger.Infof("Item is not available")
 	} else {
 		logger.Infof("Received item in stock ID1: %+v",
 			itemInStockRsp.GetArticleID())
@@ -116,8 +114,9 @@ func (c *Client) Interact() {
 			itemInStockRsp.GetName())
 		logger.Infof("Received item in stock price: %+v",
 			itemInStockRsp.GetPrice())
+		logger.Infof("Received item in stock available: %+v",
+			itemInStockRsp.GetAmount())
 	}
-
 	//Get stock of item
 	stockOfItemRsp, err := c.stock.GetStockOfItem(context.Background(),
 		&api.StockOfItemRequest{
@@ -130,7 +129,6 @@ func (c *Client) Interact() {
 		logger.Infof("Received stock of item ID1: %+v",
 			stockOfItemRsp.GetAmount())
 	}
-
 	//Reduce stock of item
 	reduceBy := uint32(1)
 	stockReduceRsp, err := c.stock.ReduceStockOfItem(context.Background(),
@@ -147,7 +145,6 @@ func (c *Client) Interact() {
 		logger.Infof("Received reduced stock of item ID1: %+v",
 			stockReduceRsp.GetAmount())
 	}
-
 	//Increase stock of item
 	increaseBy := uint32(1)
 	stockIncreaseRsp, err := c.stock.IncreaseStockOfItem(context.Background(),

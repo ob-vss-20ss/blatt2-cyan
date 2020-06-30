@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
 )
 
@@ -24,8 +25,9 @@ func (c *Customer) RegisterCustomer(ctx context.Context,
 	name := req.Name
 	address := req.Address
 	customerID := c.registerCustomer(name, address)
-	fmt.Printf("Custommers: %v\n", c.customers)
-	fmt.Printf("Number of custommers: %v\n", len(c.customers))
+
+	logger.Infof("Number of registered custommers: %d\n", len(c.customers))
+
 	rsp.CustomerID = customerID
 	return nil
 }
@@ -53,8 +55,9 @@ func (c *Customer) DeleteCustomer(ctx context.Context,
 	if ok {
 		delete(c.customers, customerID)
 	}
-	fmt.Printf("Custommers: %v\n", c.customers)
-	fmt.Printf("Number of custommers: %v\n", len(c.customers))
+
+	logger.Infof("Number of registered custommers: %d\n", len(c.customers))
+
 	rsp.CustomerID = customer.customerID
 	return nil
 }

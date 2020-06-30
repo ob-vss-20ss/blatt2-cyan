@@ -24,8 +24,11 @@ func main() {
 	stock := micro.NewService()
 	stock.Init()
 
-	if err := api.RegisterCatalogHandler(service.Server(),
-		catalog.New(api.NewStockService("stock", stock.Client()))); err != nil {
+	catalogService := catalog.New(api.NewStockService("stock", stock.Client()))
+
+	catalogService.InitData()
+
+	if err := api.RegisterCatalogHandler(service.Server(), catalogService); err != nil {
 		logger.Fatal(err)
 	}
 

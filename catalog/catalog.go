@@ -2,7 +2,9 @@ package catalog
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
@@ -20,16 +22,39 @@ func New(stock api.StockService) *Catalog {
 	}
 }
 
-func (c *Catalog) AddItems() {
+type CatalogItem struct {
+	ArticleID uint32
+	Name      string
+	Price     uint32
+}
+
+func (c *Catalog) InitData() {
+	var itemsJson []CatalogItem
+	file, _ := ioutil.ReadFile("data/catalog.json")
+	if err := json.Unmarshal([]byte(file), &itemsJson); err != nil {
+		panic(err)
+	}
+	for i, item := range itemsJson {
+		fmt.Printf("item from list, %v, %v, %v, %v\n", i, item.ArticleID, item.Name, item.Price)
+	}
+	for j := uint32(0); j < uint32(len(itemsJson)); j++ {
+		c.items[j+1] = &api.CatalogItem{ArticleID: itemsJson[j].ArticleID, Name: itemsJson[j].Name, Price: itemsJson[j].Price}
+	}
+	for i, item := range c.items {
+		fmt.Printf("item from map, %v, %v, %v, %v\n", i, item.ArticleID, item.Name, item.Price)
+	}
+}
+
+/*func (c *Catalog) AddItems() {
 	c.items[1] = &api.CatalogItem{ArticleID: 1, Name: "Tesla", Price: 1000}
 	c.items[2] = &api.CatalogItem{ArticleID: 2, Name: "Mercedes", Price: 100}
 	c.items[3] = &api.CatalogItem{ArticleID: 3, Name: "Mini", Price: 500}
-}
+}*/
 
 func (c *Catalog) GetItemsInStock(ctx context.Context,
 	req *api.ItemsInStockRequest,
 	rsp *api.ItemsInCatalogResponse) error {
-	c.AddItems()
+	//c.AddItems()
 
 	itemsInStockRsp, err := c.stock.GetItemsInStock(context.Background(),
 		&api.ItemsInStockRequest{})
@@ -62,7 +87,7 @@ func (c *Catalog) GetItem(ctx context.Context,
 
 	ArticleID := req.ArticleID
 
-	logger.Info(ArticleID)
+	logger.Infof("ArticleID from client: %d\n", ArticleID)
 
 	_, ok := c.items[ArticleID]
 	if ok {
@@ -71,23 +96,24 @@ func (c *Catalog) GetItem(ctx context.Context,
 				ArticleID: ArticleID,
 			})
 
-		logger.Info(itemInStockRsp)
-		logger.Info(err)
+		logger.Infof("Got item from stock: %+v", itemInStockRsp)
+		logger.Infof("Got error from stock: %+v", err)
 
 		if err != nil {
 			return fmt.Errorf("Item is not available in stock")
-		} else {
-			logger.Infof("Received item in stock ID: %+v",
-				itemInStockRsp.GetArticleID())
-			logger.Infof("Received available: %+v",
-				itemInStockRsp.GetAmount())
-			rsp.ArticleID = c.items[itemInStockRsp.ArticleID].ArticleID
-			rsp.Name = c.items[itemInStockRsp.ArticleID].Name
-			rsp.Price = c.items[itemInStockRsp.ArticleID].Price
-			rsp.Amount = itemInStockRsp.Amount
 		}
+
+		logger.Infof("Received item in stock ID: %+v",
+			itemInStockRsp.GetArticleID())
+		logger.Infof("Received available from stock: %+v",
+			itemInStockRsp.GetAmount())
+		rsp.ArticleID = c.items[itemInStockRsp.ArticleID].ArticleID
+		rsp.Name = c.items[itemInStockRsp.ArticleID].Name
+		rsp.Price = c.items[itemInStockRsp.ArticleID].Price
+		rsp.Amount = itemInStockRsp.Amount
+
 	} else {
-		return fmt.Errorf("Item is not available. Non-existent ID.")
+		return fmt.Errorf("Item is not available. Non-existent ID")
 	}
 	return nil
 }

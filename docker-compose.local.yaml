@@ -1,0 +1,103 @@
+version: "3"
+services:
+    etcd:
+        image: "bitnami/etcd:latest"
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+            - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    nats:
+        image: nats
+    redis:
+        image: "bitnami/redis:latest"
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+    catalog-service:
+        build:
+            context: .
+            dockerfile: catalog/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379
+            - etcd
+    stock-service:
+        build:
+            context: .
+            dockerfile: stock/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379
+            - etcd
+    customer-service:
+        build:
+            context: .
+            dockerfile: customer/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379
+            - etcd
+    order-service:
+        build:
+            context: .
+            dockerfile: order/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
+        links:
+            - etcd
+            - nats
+    payment-service:
+        build:
+            context: .
+            dockerfile: payment/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
+        links:
+            - etcd
+            - nats 
+    shipment-service:
+        build:
+            context: .
+            dockerfile: shipment/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
+        links:
+            - etcd
+            - nats  
+    client1:
+        build:
+            context: .
+            dockerfile: client1/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd  
+    client2:
+        build:
+            context: .
+            dockerfile: client2/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd  
+    client3:
+        build:
+            context: .
+            dockerfile: client3/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd
+    client4:
+        build:
+            context: .
+            dockerfile: client4/service/Dockerfile
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        command: --registry_address=etcd:2379 
+        links:
+            - etcd             

@@ -2,7 +2,9 @@ package stock
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
@@ -18,16 +20,39 @@ func New() *Stock {
 	}
 }
 
-func (c *Stock) AddItems() {
+/*func (c *Stock) AddItems() {
 	c.items[1] = &api.StockItem{ArticleID: 1, Amount: 20}
 	c.items[2] = &api.StockItem{ArticleID: 2, Amount: 0}
 	c.items[3] = &api.StockItem{ArticleID: 3, Amount: 20}
+}*/
+
+type StockItem struct {
+	ArticleID uint32
+	Amount    uint32
+}
+
+func (c *Stock) InitData() {
+	var itemsJson []StockItem
+	file, _ := ioutil.ReadFile("data/stock.json")
+	if err := json.Unmarshal([]byte(file), &itemsJson); err != nil {
+		panic(err)
+	}
+	for i, item := range itemsJson {
+		fmt.Printf("item from list, %v, %v, %v\n", i, item.ArticleID, item.Amount)
+	}
+	for j := uint32(0); j < uint32(len(itemsJson)); j++ {
+		c.items[j+1] = &api.StockItem{ArticleID: itemsJson[j].ArticleID, Amount: itemsJson[j].Amount}
+	}
+	for i, item := range c.items {
+		fmt.Printf("item from map, %v, %v, %v\n", i, item.ArticleID, item.Amount)
+	}
 }
 
 func (c *Stock) GetItemsInStock(ctx context.Context,
 	req *api.ItemsInStockRequest,
 	rsp *api.ItemsInStockResponse) error {
-	c.AddItems()
+	//c.AddItems()
+
 	itemList := []*api.StockItem{}
 	for _, value := range c.items {
 		if value.Amount != 0 {
@@ -43,7 +68,8 @@ func (c *Stock) GetItem(ctx context.Context,
 	rsp *api.StockItem) error {
 
 	ArticleID := req.ArticleID
-	logger.Info(ArticleID)
+
+	logger.Infof("Got article ID: %d\n", ArticleID)
 
 	_, ok := c.items[ArticleID]
 	if ok && c.items[ArticleID].Amount != 0 {
@@ -67,40 +93,56 @@ func (c *Stock) GetStockOfItem(ctx context.Context,
 	req *api.StockOfItemRequest,
 	rsp *api.StockOfItemResponse) error {
 
-	/*itemID := req.ArticleID
+	itemID := req.ArticleID
 	_, ok := c.items[itemID]
 	if ok {
 		rsp.Amount = c.items[itemID].Amount
-	}*/
+	}
 	return nil
 }
 
 func (c *Stock) ReduceStockOfItem(ctx context.Context,
 	req *api.ReduceStockRequest,
 	rsp *api.ReduceStockResponse) error {
-	/*itemID := req.ArticleID
+	itemID := req.ArticleID
 	reduceBy := req.Amount
+
+	logger.Infof("Got itemID: %d\n", itemID)
+	logger.Infof("Got reduce by: %d\n", reduceBy)
+	logger.Infof("Before reduction: %d\n", c.items[itemID].Amount)
+
 	_, ok := c.items[itemID]
 	if ok {
 		available := c.items[itemID].Amount - reduceBy
 		c.items[itemID].Amount = available
 		rsp.ArticleID = c.items[itemID].ArticleID
 		rsp.Amount = available
-	}*/
+	}
+
+	logger.Infof("After reduction: %d\n", c.items[itemID].Amount)
+
 	return nil
 }
 
 func (c *Stock) IncreaseStockOfItem(ctx context.Context,
 	req *api.IncreaseStockRequest,
 	rsp *api.IncreaseStockResponse) error {
-	/*itemID := req.ArticleID
+	itemID := req.ArticleID
 	increaseBy := req.Amount
+
+	logger.Infof("Got ItemID: %d\n", itemID)
+	logger.Infof("Got increase by: %d\n", increaseBy)
+	logger.Infof("Before increase: %d\n", c.items[itemID].Amount)
+
 	_, ok := c.items[itemID]
 	if ok {
 		available := c.items[itemID].Amount + increaseBy
 		c.items[itemID].Amount = available
 		rsp.ArticleID = c.items[itemID].ArticleID
 		rsp.Amount = available
-	}*/
+	}
+
+	logger.Infof("After increase: %d\n", c.items[itemID].Amount)
+
 	return nil
 }
