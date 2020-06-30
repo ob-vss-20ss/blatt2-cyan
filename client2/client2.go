@@ -17,7 +17,7 @@ func New(orderService api.OrderService) *Client {
 	}
 }
 
-//nolint:gomnd
+//nolint:mnd
 func (c *Client) Interact() {
 	var articleListOrder = []*api.ArticleWithAmount{
 		{
