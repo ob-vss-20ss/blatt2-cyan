@@ -22,16 +22,16 @@ func New(stock api.StockService) *Catalog {
 	}
 }
 
-type CatalogItem struct {
+type Item struct {
 	ArticleID uint32
 	Name      string
 	Price     uint32
 }
 
 func (c *Catalog) InitData() {
-	var itemsJSON []CatalogItem
+	var itemsJSON []Item
 	file, _ := ioutil.ReadFile("data/catalog.json")
-	if err := json.Unmarshal([]byte(file), &itemsJSON); err != nil {
+	if err := json.Unmarshal(file, &itemsJSON); err != nil {
 		panic(err)
 	}
 	for i, item := range itemsJSON {

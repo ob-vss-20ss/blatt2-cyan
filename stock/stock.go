@@ -26,15 +26,15 @@ func New() *Stock {
 	c.items[3] = &api.StockItem{ArticleID: 3, Amount: 20}
 }*/
 
-type StockItem struct {
+type Item struct {
 	ArticleID uint32
 	Amount    uint32
 }
 
 func (c *Stock) InitData() {
-	var itemsJSON []StockItem
+	var itemsJSON []Item
 	file, _ := ioutil.ReadFile("data/stock.json")
-	if err := json.Unmarshal([]byte(file), &itemsJSON); err != nil {
+	if err := json.Unmarshal(file, &itemsJSON); err != nil {
 		panic(err)
 	}
 	for i, item := range itemsJSON {
@@ -75,7 +75,7 @@ func (c *Stock) GetItem(ctx context.Context,
 		rsp.ArticleID = c.items[ArticleID].ArticleID
 		rsp.Amount = c.items[ArticleID].Amount
 	} else {
-		return fmt.Errorf("item is not available in stock.")
+		return fmt.Errorf("item is not available in stock")
 	}
 
 	/*_, ok := c.items[ArticleID]
