@@ -12,28 +12,28 @@ services:
         environment:
             - ALLOW_EMPTY_PASSWORD=yes
     catalog-service:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/catalog:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
         links:
             - etcd
     stock-service:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/stock:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
         links:
             - etcd
     customer-service:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/customer:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
         links:
             - etcd
     order-service:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/order:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
@@ -41,7 +41,7 @@ services:
             - etcd
             - nats
     payment-service:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/payment:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
@@ -49,7 +49,7 @@ services:
             - etcd
             - nats 
     shipment-service:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/shipment:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
@@ -57,28 +57,28 @@ services:
             - etcd
             - nats  
     client1:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client1:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
         links:
             - etcd  
     client2:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client2:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
         links:
             - etcd  
     client3:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client3:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
         links:
             - etcd
     client4:
-        image: docker.pkg.github.com/vesose/example-micro/counter:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client4:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
