@@ -18,6 +18,7 @@ services:
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
+        links:
             - etcd
     stock-service:
         build:
@@ -26,6 +27,7 @@ services:
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
+        links:
             - etcd
     customer-service:
         build:
@@ -34,6 +36,7 @@ services:
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
+        links:
             - etcd
     order-service:
         build:
