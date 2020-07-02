@@ -54,8 +54,8 @@ func (c *Client) Interact() {
 			ArticleID: articleID5,
 		})
 
-	logger.Info(itemInStockRsp)
-	logger.Info(err)
+	logger.Infof("Item in stock response (non-existent ID): %+v", itemInStockRsp)
+	logger.Infof("Error message (non-existent ID): %+v ", err)
 
 	if err != nil {
 		logger.Infof("Item is not available")
@@ -79,8 +79,8 @@ func (c *Client) Interact() {
 			ArticleID: articleID2,
 		})
 
-	logger.Info(itemInStockRsp)
-	logger.Info(err)
+	logger.Info("Item in stock response (not available in stock): %+v", itemInStockRsp)
+	logger.Info("Error message (not available in stock): %+v ", err)
 
 	if err != nil {
 		logger.Infof("Item is not available")
@@ -104,8 +104,8 @@ func (c *Client) Interact() {
 			ArticleID: articleID1,
 		})
 
-	logger.Info(itemInStockRsp)
-	logger.Info(err)
+	logger.Info("Item in stock response (available): %+v", itemInStockRsp)
+	logger.Info("Error message (not available in stock): %+v ", err)
 
 	if err != nil {
 		logger.Infof("Item is not available")
@@ -134,19 +134,23 @@ func (c *Client) Interact() {
 			Amount:    1,
 		},
 	}
+
 	placeOrderRsp, err := c.order.PlaceOrder(context.Background(),
 		&api.PlaceOrderRequest{
 			CustomerID:  customerID,
 			ArticleList: articleListOrder,
 		})
 
+	logger.Infof("Order, customer not registered: %+v", placeOrderRsp)
+	logger.Infof("Error message (customer not registered): %+v ", err)
+
 	if err != nil {
 		logger.Error(err)
-	} else {
-		//logger.Infof("Received order ID: %+v",
-		//placeOrderRsp.GetOrderID())
 		logger.Infof("Received message: %+v",
 			placeOrderRsp.GetMessage())
+	} else {
+		logger.Infof("Received order ID: %+v",
+			placeOrderRsp.GetOrderID())
 	}
 
 	//Register customer ID1------------------------------
@@ -177,10 +181,49 @@ func (c *Client) Interact() {
 		})
 	var orderID uint32
 
+	logger.Infof("Order response, item 2 not in stock: %+v", placeOrderRegisteredRsp)
+	logger.Infof("Error message (item 2 not in stock): %+v ", err)
+
 	if err != nil {
 		logger.Error(err)
+		logger.Infof("Received message: %+v",
+			placeOrderRegisteredRsp.GetMessage())
 	} else {
 		orderID = placeOrderRegisteredRsp.GetOrderID()
+		logger.Infof("Received order ID: %+v",
+			placeOrderRegisteredRsp.GetOrderID())
+		logger.Infof("Received message: %+v",
+			placeOrderRegisteredRsp.GetMessage())
+	}
+
+	//Place order ID1, ID3-------------------------------
+	//Kunde bestellt Artikel mit der ID1 und ID2
+	//Kunde ist bereits registriert
+	articleListOrder = []*api.ArticleWithAmount{
+		{
+			ArticleID: 1,
+			Amount:    5,
+		},
+		{
+			ArticleID: 3,
+			Amount:    5,
+		},
+	}
+
+	placeOrderRegisteredRsp, err = c.order.PlaceOrder(context.Background(),
+		&api.PlaceOrderRequest{
+			CustomerID:  customerID,
+			ArticleList: articleListOrder,
+		})
+
+	logger.Infof("Order response, all items are in stock: %+v", placeOrderRegisteredRsp)
+	logger.Infof("Error message (all items are in stock): %+v ", err)
+
+	if err != nil {
+		logger.Error(err)
+		logger.Infof("Received message: %+v",
+			placeOrderRegisteredRsp.GetMessage())
+	} else {
 		logger.Infof("Received order ID: %+v",
 			placeOrderRegisteredRsp.GetOrderID())
 		logger.Infof("Received message: %+v",
@@ -193,6 +236,9 @@ func (c *Client) Interact() {
 		&api.PaymentRequest{
 			OrderID: orderID,
 		})
+
+	logger.Infof("Payment response: %+v", paymentRsp)
+	logger.Infof("Error message (payment): %+v ", err)
 
 	if err != nil {
 		logger.Error(err)
