@@ -1,3 +1,4 @@
+//test client for customer-, catalog-, stock-services
 package testclient
 
 import (
@@ -25,14 +26,12 @@ func New(customer api.CustomerService,
 
 //nolint:mnd
 func (c *Client) Interact() {
-	//Register customer ID1
-	//customerID := uint32(1)
+	//Register customer ID4
 	name := "Rebel"
 	address := "Grasmeierstraße, 15"
 
 	registerRsp, err := c.customer.RegisterCustomer(context.Background(),
 		&api.RegisterCustomerRequest{
-			//CustomerID: customerID,
 			Name:    name,
 			Address: address,
 		})
@@ -43,13 +42,12 @@ func (c *Client) Interact() {
 		logger.Infof("Received added customerID: %+v",
 			registerRsp.GetCustomerID())
 	}
-	//Register customer ID2
+	//Register customer ID5
 	name = "Toska"
 	address = "Klarastraße, 8"
 
 	registerRsp, err = c.customer.RegisterCustomer(context.Background(),
 		&api.RegisterCustomerRequest{
-			//CustomerID: customerID,
 			Name:    name,
 			Address: address,
 		})

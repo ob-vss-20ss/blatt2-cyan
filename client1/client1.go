@@ -58,7 +58,7 @@ func (c *Client) Interact() {
 	logger.Infof("Error message (non-existent ID): %+v ", err)
 
 	if err != nil {
-		logger.Infof("Item is not available")
+		logger.Error(err)
 	} else {
 		logger.Infof("Received item in stock ID1: %+v",
 			itemInStockRsp.GetArticleID())
@@ -79,11 +79,11 @@ func (c *Client) Interact() {
 			ArticleID: articleID2,
 		})
 
-	logger.Info("Item in stock response (not available in stock): %+v", itemInStockRsp)
-	logger.Info("Error message (not available in stock): %+v ", err)
+	logger.Infof("Item in stock response (not available in stock): %+v", itemInStockRsp)
+	logger.Infof("Error message (not available in stock): %+v", err)
 
 	if err != nil {
-		logger.Infof("Item is not available")
+		logger.Error(err)
 	} else {
 		logger.Infof("Received item in stock ID1: %+v",
 			itemInStockRsp.GetArticleID())
@@ -104,8 +104,8 @@ func (c *Client) Interact() {
 			ArticleID: articleID1,
 		})
 
-	logger.Info("Item in stock response (available): %+v", itemInStockRsp)
-	logger.Info("Error message (not available in stock): %+v ", err)
+	logger.Infof("Item in stock response (available): %+v", itemInStockRsp)
+	logger.Infof("Error message (not available in stock): %+v", err)
 
 	if err != nil {
 		logger.Infof("Item is not available")
@@ -246,146 +246,3 @@ func (c *Client) Interact() {
 		logger.Info(paymentRsp)
 	}
 }
-
-/*func (c *Client) Interact() {
-	//Register customer ID1
-	//customerID := uint32(1)
-	name := "Rebel"
-	address := "Grasmeierstraße, 15"
-
-	registerRsp, err := c.customer.RegisterCustomer(context.Background(),
-		&api.RegisterCustomerRequest{
-			//CustomerID: customerID,
-			Name:    name,
-			Address: address,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received added customerID: %+v",
-			registerRsp.GetCustomerID())
-	}
-	//Register customer ID2
-	name = "Toska"
-	address = "Klarastraße, 8"
-
-	registerRsp, err = c.customer.RegisterCustomer(context.Background(),
-		&api.RegisterCustomerRequest{
-			//CustomerID: customerID,
-			Name:    name,
-			Address: address,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received: %+v", registerRsp.GetCustomerID())
-	}
-	//Get customer ID1
-	customerID := uint32(1)
-
-	getCustomerRsp, err := c.customer.GetCustomer(context.Background(),
-		&api.GetCustomerRequest{
-			CustomerID: customerID,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received customerID: %+v",
-			getCustomerRsp.GetCustomerID())
-		logger.Infof("Received customer name: %+v",
-			getCustomerRsp.GetName())
-		logger.Infof("Received customer address: %+v",
-			getCustomerRsp.GetAddress())
-	}
-	//Delete customer ID1
-	deleteCustomerRsp, err := c.customer.DeleteCustomer(context.Background(),
-		&api.DeleteCustomerRequest{
-			CustomerID: customerID,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received deleted customerID: %+v",
-			deleteCustomerRsp.GetCustomerID())
-	}
-
-	//Get items in stock
-	itemsInStockRsp, err := c.catalog.GetItemsInStock(context.Background(),
-		&api.ItemsInStockRequest{})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received items in Stock: %+v",
-			itemsInStockRsp.GetItems())
-	}
-
-	//Get item in stock ID1
-	articleID := uint32(1)
-	itemInStockRsp, err := c.catalog.GetItem(context.Background(),
-		&api.ItemRequest{
-			ArticleID: articleID,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received item in stock ID1: %+v",
-			itemInStockRsp.GetArticleID())
-		logger.Infof("Received item in stock name: %+v",
-			itemInStockRsp.GetName())
-		logger.Infof("Received item in stock price: %+v",
-			itemInStockRsp.GetPrice())
-	}
-
-	//Get stock of item
-	stockOfItemRsp, err := c.stock.GetStockOfItem(context.Background(),
-		&api.StockOfItemRequest{
-			ArticleID: articleID,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received stock of item ID1: %+v",
-			stockOfItemRsp.GetAmount())
-	}
-
-	//Reduce stock of item
-	reduceBy := uint32(1)
-	stockReduceRsp, err := c.stock.ReduceStockOfItem(context.Background(),
-		&api.ReduceStockRequest{
-			ArticleID: articleID,
-			Amount:    reduceBy,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received item ID1: %+v",
-			stockReduceRsp.GetArticleID())
-		logger.Infof("Received reduced stock of item ID1: %+v",
-			stockReduceRsp.GetAmount())
-	}
-
-	//Increase stock of item
-	increaseBy := uint32(1)
-	stockIncreaseRsp, err := c.stock.IncreaseStockOfItem(context.Background(),
-		&api.IncreaseStockRequest{
-			ArticleID: articleID,
-			Amount:    increaseBy,
-		})
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Infof("Received item ID1: %+v",
-			stockIncreaseRsp.GetArticleID())
-		logger.Infof("Received increased stock of item ID1: %+v",
-			stockIncreaseRsp.GetAmount())
-	}
-}*/

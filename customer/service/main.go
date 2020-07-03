@@ -23,6 +23,8 @@ func main() {
 
 	customerService := customer.New()
 
+	customerService.InitData()
+
 	if err := api.RegisterCustomerHandler(service.Server(),
 		customerService); err != nil {
 		logger.Fatal(err)
