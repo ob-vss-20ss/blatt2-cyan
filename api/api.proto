@@ -87,10 +87,9 @@ service Customer {
     rpc DeleteCustomer(DeleteCustomerRequest) returns (DeleteCustomerResponse) {}
 }
 
-message RegisterCustomerRequest {
-    uint32 CustomerID = 1;   
-	string Name = 2;    
-	string Address = 3; 
+message RegisterCustomerRequest {   
+	string Name = 1;    
+	string Address = 2; 
 }
 
 message RegisterCustomerResponse {

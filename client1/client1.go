@@ -123,7 +123,7 @@ func (c *Client) Interact() {
 	//Place order ID1, ID2-------------------------------
 	//Kunde bestellt Artikel mit der ID1 und ID2
 	//Kunde ist noch nicht registriert
-	customerID := uint32(1)
+	customerID := uint32(4)
 	articleListOrder := []*api.ArticleWithAmount{
 		{
 			ArticleID: 1,
@@ -147,13 +147,13 @@ func (c *Client) Interact() {
 	if err != nil {
 		logger.Error(err)
 		logger.Infof("Received message: %+v",
-			placeOrderRsp.GetMessage())
+			placeOrderRsp.Message)
 	} else {
 		logger.Infof("Received order ID: %+v",
 			placeOrderRsp.GetOrderID())
 	}
 
-	//Register customer ID1------------------------------
+	//Register customer ID4------------------------------
 	//Kunde registriert sich
 	name := "Rebel"
 	address := "Grasmeierstraße, 15"
@@ -174,6 +174,7 @@ func (c *Client) Interact() {
 	//Place order ID1, ID2-------------------------------
 	//Kunde bestellt Artikel mit der ID1 und ID2
 	//Kunde ist bereits registriert
+	//Artikel mit ID2 ist nicht im stock
 	placeOrderRegisteredRsp, err := c.order.PlaceOrder(context.Background(),
 		&api.PlaceOrderRequest{
 			CustomerID:  customerID,
@@ -187,17 +188,15 @@ func (c *Client) Interact() {
 	if err != nil {
 		logger.Error(err)
 		logger.Infof("Received message: %+v",
-			placeOrderRegisteredRsp.GetMessage())
+			placeOrderRegisteredRsp.Message)
 	} else {
 		orderID = placeOrderRegisteredRsp.GetOrderID()
 		logger.Infof("Received order ID: %+v",
 			placeOrderRegisteredRsp.GetOrderID())
-		logger.Infof("Received message: %+v",
-			placeOrderRegisteredRsp.GetMessage())
 	}
 
 	//Place order ID1, ID3-------------------------------
-	//Kunde bestellt Artikel mit der ID1 und ID2
+	//Kunde bestellt Artikel mit der ID1 und ID3
 	//Kunde ist bereits registriert
 	articleListOrder = []*api.ArticleWithAmount{
 		{
@@ -221,28 +220,17 @@ func (c *Client) Interact() {
 
 	if err != nil {
 		logger.Error(err)
-		logger.Infof("Received message: %+v",
-			placeOrderRegisteredRsp.GetMessage())
 	} else {
 		logger.Infof("Received order ID: %+v",
 			placeOrderRegisteredRsp.GetOrderID())
 		logger.Infof("Received message: %+v",
-			placeOrderRegisteredRsp.GetMessage())
+			placeOrderRegisteredRsp.Message)
 	}
 
 	//Receive payment-----------------------------------
 	//Kunde bezahlt die Bestellung
-	paymentRsp, err := c.payment.ReceivePayment(context.Background(),
+	_, err = c.payment.ReceivePayment(context.Background(),
 		&api.PaymentRequest{
 			OrderID: orderID,
 		})
-
-	logger.Infof("Payment response: %+v", paymentRsp)
-	logger.Infof("Error message (payment): %+v ", err)
-
-	if err != nil {
-		logger.Error(err)
-	} else {
-		logger.Info(paymentRsp)
-	}
 }
