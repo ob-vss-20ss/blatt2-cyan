@@ -12,28 +12,28 @@ services:
         environment:
             - ALLOW_EMPTY_PASSWORD=yes
     catalog-service:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/catalog:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_catalog-service:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
         links:
             - etcd
     stock-service:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/stock:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_stock-service:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
         links:
             - etcd
     customer-service:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/customer:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_customer-service:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379
         links:
             - etcd
     order-service:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/order:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_order-service:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
@@ -41,7 +41,7 @@ services:
             - etcd
             - nats
     payment-service:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/payment:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_payment-service:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
@@ -49,7 +49,7 @@ services:
             - etcd
             - nats 
     shipment-service:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/shipment:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_shipment-service:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 --broker_address=nats://nats:4222
@@ -57,28 +57,28 @@ services:
             - etcd
             - nats  
     client1:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client1:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_client1:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
         links:
             - etcd  
     client2:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client2:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_client2:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
         links:
             - etcd  
     client3:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client3:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_client3:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
         links:
             - etcd
     client4:
-        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/client4:latest
+        image: docker.pkg.github.com/ob-vss-20ss/blatt2-cyan/blatt2cyan_client4:latest
         environment:
             - ALLOW_NONE_AUTHENTICATION=yes
         command: --registry_address=etcd:2379 
