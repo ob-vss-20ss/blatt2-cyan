@@ -2,6 +2,7 @@ package client1
 
 import (
 	"context"
+	"time"
 
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
@@ -31,6 +32,7 @@ func New(customer api.CustomerService,
 
 //nolint:mnd
 func (c *Client) Interact() {
+	time.Sleep(1 * time.Second)
 	//Get items in stock-----------------------------------
 	//Betrachten des Angebots
 	//Dem Kunden werden nur die Artikel angezeigt,
