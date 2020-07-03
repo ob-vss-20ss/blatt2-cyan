@@ -30,7 +30,7 @@ type Person struct {
 func (c *Customer) InitData() {
 	var itemsJSON []Person
 	file, _ := ioutil.ReadFile("data/customers.json")
-	if err := json.Unmarshal([]byte(file), &itemsJSON); err != nil {
+	if err := json.Unmarshal(file, &itemsJSON); err != nil {
 		panic(err)
 	}
 	for i, item := range itemsJSON {
