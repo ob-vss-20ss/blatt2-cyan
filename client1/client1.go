@@ -123,7 +123,7 @@ func (c *Client) Interact() {
 	//Place order ID1, ID2-------------------------------
 	//Kunde bestellt Artikel mit der ID1 und ID2
 	//Kunde ist noch nicht registriert
-	customerID := uint32(4)
+	customerID := uint32(5)
 	articleListOrder := []*api.ArticleWithAmount{
 		{
 			ArticleID: 1,
@@ -153,7 +153,7 @@ func (c *Client) Interact() {
 			placeOrderRsp.GetOrderID())
 	}
 
-	//Register customer ID4------------------------------
+	//Register customer ID5------------------------------
 	//Kunde registriert sich
 	name := "Rebel"
 	address := "Grasmeierstraße, 15"
