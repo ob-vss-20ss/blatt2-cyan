@@ -2,6 +2,7 @@ package client4
 
 import (
 	"context"
+	"time"
 
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
@@ -21,6 +22,7 @@ func New(orderService api.OrderService, paymentService api.PaymentService) *Clie
 
 //nolint:mnd
 func (c *Client) Interact() {
+	time.Sleep(6 * time.Second)
 	var articleListOrder = []*api.ArticleWithAmount{
 		{
 			ArticleID: 1,

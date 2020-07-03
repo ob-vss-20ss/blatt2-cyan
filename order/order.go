@@ -74,12 +74,14 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 	})
 
 	if err != nil {
+		logger.Info("Kundennummer nicht gefunden. Bestellung abgebrochen")
 		res.Message = "Die von Ihnen angegebene Kundennummer ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n"
 		return fmt.Errorf("customer not found")
 	}
 
 	//Bei StockService verfügbarkeit prüfen
 	if !o.CheckStock(req.ArticleList) {
+		logger.Info("Zu wenig Artikel vorhanden. Bestellung abgebrochen")
 		res.Message = "Von einem der von Ihnen gewälten Artikel ist nicht mehr genug auf Lager.Reduzieren Sie die Bestellmenge und versuche Sie es nochmal."
 		return fmt.Errorf("stock too low")
 	}
@@ -104,6 +106,8 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 	//Key für die nächste Bestellung erhöhen
 	o.key++
 
+	logger.Info("Bestellung erfolgreich abgeschlossen.")
+
 	return nil
 }
 
@@ -116,23 +120,27 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	ordering, ok := o.orderMap[req.OrderID]
 
 	if !ok {
+		logger.Info("Unbekannte Bestellnummer. Rückgabe abgebrochen.")
 		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
 		return fmt.Errorf("order not found")
 	}
 
 	//Bestellung prüfen (vorhanden, Kundennummer stimmt überein, artikel mit entsprechender Stückzahl enthalten)
 	if ordering.customerID != req.CustomerID {
+		logger.Info("Angegebene Kundennummer stimmt nicht. Rückgabe abgebrochen.")
 		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer der Bestellung überein."
 		return fmt.Errorf("wrong customer")
 	}
 
 	if !o.OrderContainsArticle(ordering.articleList, req.ArticleList) {
+		logger.Info("Rückgabeartikel wa nicht in der Bestellung enthalten. Rückgabe abgebrochen.")
 		res.Message = "Die von Ihnen mitgegebene Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war."
 		return fmt.Errorf("order didn't contain article")
 	}
 
 	//Preis ausrechnen (catalog Service) und die Summe in der Antwort an den Client schicken
 	if !req.Replacement {
+		logger.Info("Rückgabe erfolgreich abgeschlossen")
 		res.Message = fmt.Sprintf("Hiermit erstatten wir wie gewünscht den Kaufpreis: %d€", o.CalculatePrice(req.ArticleList))
 		return nil
 	}
@@ -143,8 +151,10 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	}
 
 	if !replacementSuccess && req.Replacement {
+		logger.Info("Kaufpreis wurde erstattet, da der Artikel nicht mehr auf Lager ist.")
 		res.Message = fmt.Sprintf("Leider konnten wir die Ware nicht ersetzen. Deshalb erstatten wir hiermit den Kaufpreis: %d€", o.CalculatePrice(req.ArticleList))
 	} else {
+		logger.Info("Rückgabe erfolgreich abgeschlossen")
 		res.Message = fmt.Sprintf("Der angeforderte Ersatz ist mit der Bestellnummer %d auf dem Weg zu Ihnen.", o.key)
 		o.key++
 	}
@@ -170,18 +180,21 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 	ordering, ok := o.orderMap[req.OrderID]
 
 	if !ok {
+		logger.Info("Bestellnummer nicht bekannt. Stornierung abgebrochen.")
 		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
 		return fmt.Errorf("order not found")
 	}
 
 	//Bestellung überprüfen(nur Kundennummer)
 	if ordering.customerID != req.CustomerID {
+		logger.Info("Kundennummer stimmt nicht. Stornierung abgebrochen")
 		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein"
 		return fmt.Errorf("wrong customerID")
 	}
 
 	//Prüfen ob Bestellung Versandt
 	if ordering.shipped {
+		logger.Info("Bestellung bereits verschickt. Stornierung abgebrochen.")
 		res.Message = "Die Stornierung dieser Bestellung ist leider nicht mehr möglich, da sie bereits versandt wurde"
 		return fmt.Errorf("order already shipped")
 	}
@@ -195,6 +208,7 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 	//Bestellung löschen
 	delete(o.orderMap, req.OrderID)
 
+	logger.Info("Bestellung erfolgreich storniert.")
 	//Prüfen ob bezahlt
 	if !ordering.paid {
 		res.Message = "Ihre Bestellung konnte storniert werden."
@@ -213,6 +227,7 @@ func (o *Order) GetOrder(ctx context.Context, req *api.GetOrderRequest, res *api
 	ordering, ok := o.orderMap[req.OrderID]
 
 	if !ok {
+		logger.Info("Bestellung nicht gefunden. GetOrder abgebrochen")
 		return fmt.Errorf("order not found")
 	}
 
@@ -220,6 +235,8 @@ func (o *Order) GetOrder(ctx context.Context, req *api.GetOrderRequest, res *api
 	res.ArticleList = ordering.articleList
 	res.Paid = ordering.paid
 	res.Shipped = ordering.shipped
+
+	logger.Info("GetOrder erfolgreich abgeschlossen.")
 
 	return nil
 }

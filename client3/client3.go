@@ -2,6 +2,7 @@ package client3
 
 import (
 	"context"
+	"time"
 
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/ob-vss-20ss/blatt2-cyan/api"
@@ -21,6 +22,7 @@ func New(orderService api.OrderService, paymentService api.PaymentService) *Clie
 
 //nolint:mnd
 func (c *Client) Interact() {
+	time.Sleep(4 * time.Second)
 	var articleListOrder = []*api.ArticleWithAmount{
 		{
 			ArticleID: 1,
@@ -33,7 +35,7 @@ func (c *Client) Interact() {
 	}
 
 	resOrder, err := c.orderService.PlaceOrder(context.Background(), &api.PlaceOrderRequest{
-		CustomerID:  1,
+		CustomerID:  3,
 		ArticleList: articleListOrder,
 	})
 
@@ -61,7 +63,7 @@ func (c *Client) Interact() {
 	}
 
 	resReturn, err := c.orderService.ReturnItem(context.Background(), &api.ReturnRequest{
-		CustomerID:  1,
+		CustomerID:  3,
 		OrderID:     resOrder.OrderID,
 		Replacement: true,
 		ArticleList: articleListReturn,
