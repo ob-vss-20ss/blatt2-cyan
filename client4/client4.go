@@ -35,7 +35,7 @@ func (c *Client) Interact() {
 	}
 
 	resOrder, err := c.orderService.PlaceOrder(context.Background(), &api.PlaceOrderRequest{
-		CustomerID:  1,
+		CustomerID:  4,
 		ArticleList: articleListOrder,
 	})
 
@@ -63,7 +63,7 @@ func (c *Client) Interact() {
 	}
 
 	resReturn, err := c.orderService.ReturnItem(context.Background(), &api.ReturnRequest{
-		CustomerID:  1,
+		CustomerID:  4,
 		OrderID:     resOrder.OrderID,
 		Replacement: false,
 		ArticleList: articleListReturn,

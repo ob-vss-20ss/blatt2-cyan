@@ -270,7 +270,7 @@ func (o *Order) CheckStock(articleList []*api.ArticleWithAmount) bool {
 		})
 
 		if err != nil {
-			panic(err)
+			return false
 		}
 
 		if stockRsp.Amount < articleList[i].Amount {

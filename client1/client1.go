@@ -149,7 +149,7 @@ func (c *Client) Interact() {
 	if err != nil {
 		logger.Error(err)
 		logger.Infof("Received message: %+v",
-			placeOrderRsp.Message)
+			placeOrderRsp.GetMessage())
 	} else {
 		logger.Infof("Received order ID: %+v",
 			placeOrderRsp.GetOrderID())
@@ -190,7 +190,7 @@ func (c *Client) Interact() {
 	if err != nil {
 		logger.Error(err)
 		logger.Infof("Received message: %+v",
-			placeOrderRegisteredRsp.Message)
+			placeOrderRegisteredRsp.GetMessage())
 	} else {
 		orderID = placeOrderRegisteredRsp.GetOrderID()
 		logger.Infof("Received order ID: %+v",
@@ -226,7 +226,7 @@ func (c *Client) Interact() {
 		logger.Infof("Received order ID: %+v",
 			placeOrderRegisteredRsp.GetOrderID())
 		logger.Infof("Received message: %+v",
-			placeOrderRegisteredRsp.Message)
+			placeOrderRegisteredRsp.GetMessage())
 	}
 
 	//Receive payment-----------------------------------
