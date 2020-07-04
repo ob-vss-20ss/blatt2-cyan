@@ -62,6 +62,7 @@ func (o *Order) Process(ctx context.Context, event *api.Event) error {
 	return nil
 }
 
+// nolint:lll
 func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res *api.PlaceOrderResponse) error {
 	msg := fmt.Sprint("Received order request from customer", req.CustomerID)
 
@@ -74,16 +75,14 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 
 	if err != nil {
 		logger.Info("Kundennummer nicht gefunden. Bestellung abgebrochen")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer 
-			ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n")
+		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n")
 		return fmt.Errorf("customer not found")
 	}
 
 	//Bei StockService verfügbarkeit prüfen
 	if !o.CheckStock(req.ArticleList) {
 		logger.Info("Zu wenig Artikel vorhanden. Bestellung abgebrochen")
-		res.Message = fmt.Sprint("Von einem der von Ihnen gewälten Artikel ist 
-			nicht mehr genug auf Lager.Reduzieren Sie die Bestellmenge und versuche Sie es nochmal.")
+		res.Message = fmt.Sprint("Von einem der von Ihnen gewälten Artikel ist nicht mehr genug auf Lager.Reduzieren Sie die Bestellmenge und versuche Sie es nochmal.")
 		return fmt.Errorf("stock too low")
 	}
 
@@ -100,8 +99,7 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 	o.orderMap[o.key] = ordering
 
 	//Antwort an Client
-	msg = fmt.Sprintf("Bestellung Eingegangen. Sie wird zu Ihnen geliefert 
-		sobald sie %d € an unseren Zahlungsdienstleister überwiesen haben", price)
+	msg = fmt.Sprintf("Bestellung Eingegangen. Sie wird zu Ihnen geliefert sobald sie %d € an unseren Zahlungsdienstleister überwiesen haben", price)
 	res.OrderID = o.key
 	res.Message = msg
 
@@ -113,7 +111,7 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 	return nil
 }
 
-
+// nolint:lll
 func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api.ReturnResponse) error {
 	msg := fmt.Sprint("Received return request from customer", req.CustomerID)
 
@@ -130,23 +128,20 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	//Bestellung prüfen (vorhanden, Kundennummer stimmt überein, artikel mit entsprechender Stückzahl enthalten)
 	if ordering.customerID != req.CustomerID {
 		logger.Info("Angegebene Kundennummer stimmt nicht. Rückgabe abgebrochen.")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer 
-			stimmt nicht mit der Kundennummer der Bestellung überein.")
+		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer der Bestellung überein.")
 		return fmt.Errorf("wrong customer")
 	}
 
 	if !o.OrderContainsArticle(ordering.articleList, req.ArticleList) {
 		logger.Info("Rückgabeartikel wa nicht in der Bestellung enthalten. Rückgabe abgebrochen.")
-		res.Message = fmt.Sprint("Die von Ihnen mitgegebene 
-			Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war.")
+		res.Message = fmt.Sprint("Die von Ihnen mitgegebene Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war.")
 		return fmt.Errorf("order didn't contain article")
 	}
 
 	//Preis ausrechnen (catalog Service) und die Summe in der Antwort an den Client schicken
 	if !req.Replacement {
 		logger.Info("Rückgabe erfolgreich abgeschlossen")
-		res.Message = fmt.Sprintf("Hiermit erstatten wir 
-			wie gewünscht den Kaufpreis: %d€", o.CalculatePrice(req.ArticleList))
+		res.Message = fmt.Sprintf("Hiermit erstatten wir wie gewünscht den Kaufpreis: %d€", o.CalculatePrice(req.ArticleList))
 		return nil
 	}
 
@@ -157,12 +152,10 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 
 	if !replacementSuccess && req.Replacement {
 		logger.Info("Kaufpreis wurde erstattet, da der Artikel nicht mehr auf Lager ist.")
-		res.Message = fmt.Sprintf("Leider konnten wir die Ware nicht ersetzen. 
-			Deshalb erstatten wir hiermit den Kaufpreis: %d€", o.CalculatePrice(req.ArticleList))
+		res.Message = fmt.Sprintf("Leider konnten wir die Ware nicht ersetzen. Deshalb erstatten wir hiermit den Kaufpreis: %d€", o.CalculatePrice(req.ArticleList))
 	} else {
 		logger.Info("Rückgabe erfolgreich abgeschlossen")
-		res.Message = fmt.Sprintf("Der angeforderte Ersatz ist mit der 
-			Bestellnummer %d auf dem Weg zu Ihnen.", o.key)
+		res.Message = fmt.Sprintf("Der angeforderte Ersatz ist mit der Bestellnummer %d auf dem Weg zu Ihnen.", o.key)
 		o.key++
 	}
 
@@ -178,6 +171,7 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	return nil
 }
 
+// nolint:lll
 func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *api.CancelResponse) error {
 	msg := fmt.Sprintf("Received cancel request from %d (customerID)", req.CustomerID)
 
@@ -194,16 +188,14 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 	//Bestellung überprüfen(nur Kundennummer)
 	if ordering.customerID != req.CustomerID {
 		logger.Info("Kundennummer stimmt nicht. Stornierung abgebrochen")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer 
-			stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein")
+		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein")
 		return fmt.Errorf("wrong customerID")
 	}
 
 	//Prüfen ob Bestellung Versandt
 	if ordering.shipped {
 		logger.Info("Bestellung bereits verschickt. Stornierung abgebrochen.")
-		res.Message = fmt.Sprint("Die Stornierung dieser Bestellung ist 
-			leider nicht mehr möglich, da sie bereits versandt wurde")
+		res.Message = fmt.Sprint("Die Stornierung dieser Bestellung ist leider nicht mehr möglich, da sie bereits versandt wurde")
 		return fmt.Errorf("order already shipped")
 	}
 
@@ -223,8 +215,7 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 		return nil
 	}
 
-	res.Message = fmt.Sprintf("Ihre Bestellung konnte storniert werden. 
-	Hiermit erstatten wir Ihnen den Kaufpreis: %d€", price)
+	res.Message = fmt.Sprintf("Ihre Bestellung konnte storniert werden. Hiermit erstatten wir Ihnen den Kaufpreis: %d€", price)
 	return nil
 }
 
