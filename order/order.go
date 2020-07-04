@@ -75,14 +75,15 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 
 	if err != nil {
 		logger.Info("Kundennummer nicht gefunden. Bestellung abgebrochen")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n")
+		message := fmt.Sprint("Die von Ihnen angegebene Kundennummer ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n")
+		res.Message = message
 		return fmt.Errorf("customer not found")
 	}
 
 	//Bei StockService verfügbarkeit prüfen
 	if !o.CheckStock(req.ArticleList) {
 		logger.Info("Zu wenig Artikel vorhanden. Bestellung abgebrochen")
-		res.Message = fmt.Sprint("Von einem der von Ihnen gewälten Artikel ist nicht mehr genug auf Lager.Reduzieren Sie die Bestellmenge und versuche Sie es nochmal.")
+		res.Message = "Von einem der von Ihnen gewälten Artikel ist nicht mehr genug auf Lager.Reduzieren Sie die Bestellmenge und versuche Sie es nochmal."
 		return fmt.Errorf("stock too low")
 	}
 
@@ -121,7 +122,7 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 
 	if !ok {
 		logger.Info("Unbekannte Bestellnummer. Rückgabe abgebrochen.")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt.")
+		res.Message = f"Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
 		return fmt.Errorf("order not found")
 	}
 
