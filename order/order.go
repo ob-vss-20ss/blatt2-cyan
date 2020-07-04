@@ -122,7 +122,7 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 
 	if !ok {
 		logger.Info("Unbekannte Bestellnummer. Rückgabe abgebrochen.")
-		res.Message = f"Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
+		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
 		return fmt.Errorf("order not found")
 	}
 
