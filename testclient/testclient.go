@@ -26,7 +26,7 @@ func New(customer api.CustomerService,
 
 //nolint:mnd
 func (c *Client) Interact() {
-	//Register customer ID4
+	//Register customer ID5
 	name := "Rebel"
 	address := "Grasmeierstraße, 15"
 
@@ -42,7 +42,7 @@ func (c *Client) Interact() {
 		logger.Infof("Received added customerID: %+v",
 			registerRsp.GetCustomerID())
 	}
-	//Register customer ID5
+	//Register customer ID6
 	name = "Toska"
 	address = "Klarastraße, 8"
 
