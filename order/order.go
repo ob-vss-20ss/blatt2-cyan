@@ -182,21 +182,21 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 
 	if !ok {
 		logger.Info("Bestellnummer nicht bekannt. Stornierung abgebrochen.")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt.")
+		res.Message = "Die von Ihnen angegebene Bestellnummer ist uns nicht bekannt."
 		return fmt.Errorf("order not found")
 	}
 
 	//Bestellung überprüfen(nur Kundennummer)
 	if ordering.customerID != req.CustomerID {
 		logger.Info("Kundennummer stimmt nicht. Stornierung abgebrochen")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein")
+		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer, der von Ihnen angegebenen Bestellung überein"
 		return fmt.Errorf("wrong customerID")
 	}
 
 	//Prüfen ob Bestellung Versandt
 	if ordering.shipped {
 		logger.Info("Bestellung bereits verschickt. Stornierung abgebrochen.")
-		res.Message = fmt.Sprint("Die Stornierung dieser Bestellung ist leider nicht mehr möglich, da sie bereits versandt wurde")
+		res.Message = "Die Stornierung dieser Bestellung ist leider nicht mehr möglich, da sie bereits versandt wurde"
 		return fmt.Errorf("order already shipped")
 	}
 
