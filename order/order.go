@@ -212,7 +212,7 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 	logger.Info("Bestellung erfolgreich storniert.")
 	//Prüfen ob bezahlt
 	if !ordering.paid {
-		res.Message = fmt.Sprint("Ihre Bestellung konnte storniert werden.")
+		res.Message = "Ihre Bestellung konnte storniert werden."
 		return nil
 	}
 
