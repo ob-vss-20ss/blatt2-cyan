@@ -75,7 +75,7 @@ func (o *Order) PlaceOrder(ctx context.Context, req *api.PlaceOrderRequest, res 
 
 	if err != nil {
 		logger.Info("Kundennummer nicht gefunden. Bestellung abgebrochen")
-		message := fmt.Sprint("Die von Ihnen angegebene Kundennummer ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n")
+		message := "Die von Ihnen angegebene Kundennummer ist ungültig.Falls Sie noch kein Konto bei uns haben, registrieren Sie sich bitte zuerst beim Customer-Service\n"
 		res.Message = message
 		return fmt.Errorf("customer not found")
 	}
@@ -129,13 +129,13 @@ func (o *Order) ReturnItem(ctx context.Context, req *api.ReturnRequest, res *api
 	//Bestellung prüfen (vorhanden, Kundennummer stimmt überein, artikel mit entsprechender Stückzahl enthalten)
 	if ordering.customerID != req.CustomerID {
 		logger.Info("Angegebene Kundennummer stimmt nicht. Rückgabe abgebrochen.")
-		res.Message = fmt.Sprint("Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer der Bestellung überein.")
+		res.Message = "Die von Ihnen angegebene Kundennummer stimmt nicht mit der Kundennummer der Bestellung überein."
 		return fmt.Errorf("wrong customer")
 	}
 
 	if !o.OrderContainsArticle(ordering.articleList, req.ArticleList) {
 		logger.Info("Rückgabeartikel wa nicht in der Bestellung enthalten. Rückgabe abgebrochen.")
-		res.Message = fmt.Sprint("Die von Ihnen mitgegebene Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war.")
+		res.Message = "Die von Ihnen mitgegebene Retourliste enthält mindestens einen Artikel der nicht in der Bestellung enthalten war."
 		return fmt.Errorf("order didn't contain article")
 	}
 
