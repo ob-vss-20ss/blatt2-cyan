@@ -200,7 +200,7 @@ func (o *Order) CancelOrder(ctx context.Context, req *api.CancelRequest, res *ap
 		return fmt.Errorf("order already shipped")
 	}
 
-	//Preis ausrechnen (catalog Service ansprechen), an Client in Antwort senden
+	//Preis ausrechnen (catalog Service ansprechen), an Antwort an Client senden
 	price := o.CalculatePrice(ordering.articleList)
 
 	//Bestände im StockService erhöhen
