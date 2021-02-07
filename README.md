@@ -116,7 +116,7 @@ Der Shipment-Service reagiert daraufhin ebenfalls. Er fragt die Artikel und die 
 Daraufhin setzt der Order-Service isSent auf true.
 
 
-![image info](./img/TA1.png)
+![TA1](https://user-images.githubusercontent.com/43847362/107160793-79df5100-69a9-11eb-8146-2789ac03db44.png)
 
 <center>Bild 1. Ablauf vor dem Registrieren</center>
 
