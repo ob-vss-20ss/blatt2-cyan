@@ -122,6 +122,6 @@ Daraufhin setzt der Order-Service isSent auf true.
 
 
 
-![image info](./img/TA2.png)
+![TA2](https://user-images.githubusercontent.com/43847362/107160817-98dde300-69a9-11eb-8ec3-70abda5cf85a.png)
 
 <center>Bild 2. Ablauf nach dem Registrieren</center>
