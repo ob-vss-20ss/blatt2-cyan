@@ -1,6 +1,3 @@
-# Teilaufgabe 1
-
-
 ### Customer
 
 *Daten:* customerID, name, address
