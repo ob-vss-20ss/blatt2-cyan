@@ -1,0 +1,19 @@
+[
+    {
+        "articleID": 1,
+        "name": "Tesla",
+        "price": 1000
+    },
+
+    {
+        "articleID": 2,
+        "name": "Mercedes",
+        "price": 100
+    }, 
+
+    {
+        "articleID": 3,
+        "name": "Mini",
+        "price": 500
+    }
+]

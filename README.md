@@ -1,67 +1,124 @@
-# Startercode für VSS Blatt 2
+### Customer
 
-Führen Sie das Folgende zunächst noch im `master`-Branch aus.
+*Daten:* customerID, name, address
 
-## Drone CI auf [Terraform.cs.hm.edu](https://terraform.cs.hm.edu/) vorbereiten
+*Funktionalität:*
+* neuen Kunden anlegen
+* Kunden finden
+* Kunden löschen
 
-Diesen Schritt muss nur einer aus dem Team durchführen.
+*Kommunikation mit:* 
+* Client (synchron)
+* Shipment(synchron)
 
-1. Loggen Sie sich auf meinem [Drone-Server](https://terraform.cs.hm.edu/) ein.
-2. Wählen Sie das Projekt aus und **aktivieren** Sie es.
 
-Um vom Drone-Server die erzeugten Docker-Images auf GitHub pushen zu lassen, müssen Sie
-auf GitHub einen _Personal access token_ erzeugen.
+### Catalog
 
-3. Gehen Sie dazu auf die Seite [Personal access token](https://github.com/settings/tokens)
-   und klicken Sie auf `Generate new token`. Als `Scope` klicken Sie auf `write:packages`.
-   Dabei wird `repo` und `read:packages` mit ausgewählt. Unter `Note` tragen Sie am
-   Besten sowas wie `GitHub packages` ein, damit Sie später wissen, welchen Token
-   Sie wieder löschen müssen, wenn die Veranstaltung zuende ist. Klicken Sie dann ganz unten
-   auf `Generate token`.
-4. Kopieren Sie den Token und gehen Sie zurück auf meinen Drone-Server in Ihr Projekt.
-5. Wählen Sie dort `Settings` aus und scrollen Sie bis zu `Secrets`.
-6. Tragen Sie `gh_token` bei `Secret Name` und Ihren Token bei `Secret Value` ein und
-   klicken Sie auf `ADD A SECRET`.
-7. Tragen Sie `gh_username` bei `Secret Name` und Ihren GitHub Username bei `Secret Value` ein und
-   klicken Sie auf `ADD A SECRET`.
-8. Für den Download der Docker-Images von GitHub ist noch ein weiteres Secret mit dem
-   Namen `dockerconfig` notwendig:
+*Daten:* articleID, name, price 
 
-    - Erzeugen Sie zunächst ein Base64-encodedes Authtoken, in dem Sie Ihren GitHub-Username
-      und ihr unter 6 verwendetes Token mit einem `:` verbinden und damit folgendes machen:
+*Funktionalität:* 
+* Artikel hinzufügen
+* einzelnen Artikel zurückgeben
+* alle Artikel auflisten
+* alle Artikel anzeigen, die im Bestand sind
+* Artikel löschen
 
-        ```
-        echo -u username:token | base64
-        ```
+*Kommunikation mit:* 
+* Client (synchron)
+* Stock (synchron)
+* Order (synchron)
 
-        also z.B.
 
-        ```
-        echo -u obcode:123456789012345 | base64
-        ```
+### Stock
 
-    - Fügen Sie dieses zwischen die Anführungszeichen in folgende Zeichenkette ein:
+*Daten:* articleID, amount 
 
-        ```
-        {
-           "auths": {
-              "docker.pkg.github.com": {
-                 "auth": "hier einfügen"
-              }
-           }
-        }
-        ```
+*Funktionalität:* 
+* Artikel mit Bestand hinzufügen
+* Bestand eines einzelnen Artikels zurückgeben
+* Bestand eines Artikels erhöhen/reduzieren
+* alle Artikel und Bestände auflisten
 
-        und speichern Sie dieses als `Secret Value`
+*Kommunikation mit:* 
+* Client (synchron)
+* Catalog (synchron)
+* Order (synchron)
 
-## Committen und Pushen
 
-Wenn alles passt, dann committen und pushen Sie jetzt. Der Drone CI-Job
-wird dennoch fehlschlagen, weil noch kein Go-File vorhanden ist.
+### Order 
 
-## Und jetzt nur noch die Aufgabe lösen und abgeben...
+*Daten:* orderID, customerID, Liste von articleID und dazugehörigen Mengen, isPayed (bool), isSent(bool)
 
-Erzeugen Sie **JETZT** den `develop`-Branch und beginnen Sie mit der eigentlichen
-Arbeit. Ab jetzt ist der `master`-Branch für Sie tabu!
+*Funktionalität:* 
+* Bestellung aufgeben
+* defekte Artikel zurückschicken
+* Bestellung stornieren (falls noch nicht versandt)
 
-Orientieren Sie sich gerne an <https://github.com/vesose/example-micro>.
+*Kommunikation mit:* 
+* Client (synchron)
+* Catalog (synchron)
+* Stock (synchron)
+* Payment (asynchron, Empfänger)
+* Shipment (asynchron, Empänger)
+
+
+### Payment
+
+*Daten:* -
+
+*Funktionalität:* 
+* Bestellung bezahlen
+
+*Kommunikation mit:* 
+* Client (synchron)
+* Shipment (asynchron, Sender)
+* Order (asynchron, Sender)
+
+
+### Shipment
+
+*Daten:* -
+
+*Funktionalität:* 
+* Bestellung versenden
+
+*Kommunikation mit:* 
+* Client (synchron)
+* Order (synchron)
+* Customer (synchron)
+* Order (asynchron, Sender)
+* Payment (asynchron, Empfänger)
+
+
+## Ablauf einer Bestellung eines nicht registrierten Kunden:
+
+Der Client fragt zunächst alle Artikel ab, die auf Lager sind. Dazu wird eine Nachricht an den Catalog-Service geschickt. Da der Catalog-Service nicht weiß, welche Artikel auf Lager sind, muss er eine Nachricht an den Stock-Service schicken. Dieser Antwortet mit einer Auflistung aller Artikel, die auf Lager sind. Der Catalog-Service schickt die entsprechenden Artikel dann an den Client.
+
+Der Client entscheidet sich dann einen der angezeigten Artikel zu bestellen und schickt eine Nachricht mit der articleID an den Order-Service. Da der Kunde noch nicht registriert wurde, wird auch keine customerID mitgeschickt. Also Antwortet der Order-Service zunächst mit dem Hinweis, sich beim Customer-Service zu registrieren.
+
+Der Client schickt dann eine Nachricht an den Customer-Service mit seinem Namen und seiner Adresse. Dieser dann einen neuen Kunden mit dem entsprechenden Namen, der Adresse und einer neuen customerID an. Letztere wird in der Antwort an den Kunden mitgegeben.
+
+Nach der Registrierung schickt der Client jetzt erneut seine Bestellung an den Order-Service und gibt dieses mal seine customerID mit. Der Order-Service versichert sich, dass es wirklich einen Kunden mir der übergebenen ID gibt. Danach schickt der Order-Service eine Nachricht an den Stock-Service mit der articleID und der Anzahl, um die der Bestand dieses Artikels reduziert werden soll.
+
+Der Stock-Service reduziert dann den Bestand des entsprechenden Artikels.
+
+Der Order-Service berechnet dann den Gesamtpreis der Bestellung und schickt diesen an den Client zurück mit der Aufforderung ihn beim Payment-Service zu bezahlen.
+
+Der Client schickt dann eine Nachricht mit der orderID an den Payment-Service. Dies entspricht der Bezahlung. Der Payment-Service publisht dann, dass die Bestellung mit der orderID bezahlt ist.
+
+Daraufhin setzt der Order-Service isPayed bei der entsprechenden Bestellung auf true.
+
+Der Shipment-Service reagiert daraufhin ebenfalls. Er fragt die Artikel und die dazugehörigen Mengen vom Order-Service mit der orderID ab. Außerdem holt er sich die customerID der Bestellung und fragt damit den Namen und die Adresse des Kunden beim Customer-Service ab. Anschließend schickt er eine Versandbestätigung an den Kunden und publisht die orderID.
+
+Daraufhin setzt der Order-Service isSent auf true.
+
+
+![TA1](https://user-images.githubusercontent.com/43847362/107160793-79df5100-69a9-11eb-8146-2789ac03db44.png)
+
+<center>Bild 1. Ablauf vor dem Registrieren</center>
+
+
+
+![TA2](https://user-images.githubusercontent.com/43847362/107160817-98dde300-69a9-11eb-8ec3-70abda5cf85a.png)
+
+<center>Bild 2. Ablauf nach dem Registrieren</center>

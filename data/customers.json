@@ -1,0 +1,25 @@
+[
+    {
+        "customerID": 1,
+        "name": "Tom Waits",
+        "address": "Mountain View, 1600 Amphitheatre Parkway"
+    }, 
+
+    {
+        "customerID": 2,
+        "name": "Regina Spektor",
+        "address": "Palo Alto, 3500 Deer Creek Rd"
+    },
+
+    {
+        "customerID": 3,
+        "name": "Amanda Palmer",
+        "address": "Mountain View, 899 West Evelyn Avenue"
+    },
+
+    {
+        "customerID": 4,
+        "name": "May Musk",
+        "address": "London, 6 Pancras Aquare"
+    }
+]

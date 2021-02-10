@@ -1,0 +1,16 @@
+[
+    {
+        "articleID": 1,
+        "amount": 20
+    },
+
+    {
+        "articleID": 2,
+        "amount": 0
+    }, 
+
+    {
+        "articleID": 3,
+        "amount": 20
+    }
+]

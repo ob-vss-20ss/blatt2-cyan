@@ -1,0 +1,197 @@
+syntax = "proto3";
+package api;
+option go_package = ".;api";
+
+
+//Catalog---------------------------------------------------------------------------
+service Catalog {
+    rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInCatalogResponse) {}
+    rpc GetItem(ItemRequest) returns (ItemResponse) {}
+}
+
+message CatalogItem {
+    uint32 ArticleID = 1;   
+	string Name = 2;    
+    uint32 Price = 3;
+}
+
+message ItemsInStockRequest {
+
+}
+
+message ItemsInCatalogResponse {
+    repeated CatalogItem CatalogItems = 1;
+}
+
+message ItemRequest {
+    uint32 ArticleID = 1;
+}
+
+message ItemResponse {
+    uint32 ArticleID = 1;   
+	string Name = 2;    
+    uint32 Price = 3;
+    uint32 Amount = 4;
+}
+ 
+//Stock-------------------------------------------------------------------------------
+service Stock {
+    rpc GetItemsInStock(ItemsInStockRequest) returns (ItemsInStockResponse) {}
+    rpc GetItem(ItemRequest) returns (StockItem) {}
+    rpc GetStockOfItem(StockOfItemRequest) returns (StockOfItemResponse) {}
+    rpc ReduceStockOfItem(ReduceStockRequest) returns (ReduceStockResponse) {}
+    rpc IncreaseStockOfItem(IncreaseStockRequest) returns (IncreaseStockResponse) {}
+}
+
+message StockItem {
+    uint32 ArticleID = 1;   
+    uint32 Amount = 2;
+}
+
+message ItemsInStockResponse {
+    repeated StockItem StockItems = 1;
+}
+
+message StockOfItemRequest {
+    uint32 ArticleID = 1;
+}
+
+message StockOfItemResponse {
+    uint32 Amount = 1;
+}
+
+message ReduceStockRequest {
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
+}
+
+message ReduceStockResponse {
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
+}
+
+message IncreaseStockRequest {
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
+}
+
+message IncreaseStockResponse {
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
+}
+
+//Customer-----------------------------------------------------------------------------
+service Customer {
+    rpc RegisterCustomer(RegisterCustomerRequest) returns (RegisterCustomerResponse) {}
+    rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse) {}
+    rpc DeleteCustomer(DeleteCustomerRequest) returns (DeleteCustomerResponse) {}
+}
+
+message RegisterCustomerRequest {   
+	string Name = 1;    
+	string Address = 2; 
+}
+
+message RegisterCustomerResponse {
+    uint32 CustomerID = 1; 
+}
+
+message GetCustomerRequest {
+    uint32 CustomerID = 1;
+}
+
+message GetCustomerResponse {
+    uint32 CustomerID = 1;
+    string Name = 2;
+    string Address = 3;
+}
+
+message DeleteCustomerRequest {
+    uint32 CustomerID = 1;
+}
+
+message DeleteCustomerResponse{
+    uint32 CustomerID = 1; 
+}
+
+//Order-------------------------------------------------------------------------------
+service Order {
+    rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
+    rpc ReturnItem(ReturnRequest) returns (ReturnResponse) {}
+    rpc CancelOrder(CancelRequest) returns (CancelResponse) {}
+    rpc GetOrder(GetOrderRequest) returns (GetOrderResponse) {}
+}
+
+message ArticleWithAmount {
+    uint32 ArticleID = 1;
+    uint32 Amount = 2;
+}
+
+message PlaceOrderRequest {
+    uint32 CustomerID = 1;
+    repeated ArticleWithAmount articleList = 2;
+}
+
+message PlaceOrderResponse {
+    uint32 OrderID = 1;
+    string Message = 2;
+}
+
+message ReturnRequest {
+    uint32 CustomerID = 1;
+    uint32 OrderID = 2;
+    bool Replacement = 3;
+    repeated ArticleWithAmount ArticleList = 4;
+}
+
+message ReturnResponse {
+    string Message= 1;
+}
+
+message CancelRequest {
+    uint32 CustomerID = 1;
+    uint32 OrderID = 2;
+}
+
+message CancelResponse {
+    string Message = 2;
+}
+
+message GetOrderRequest {
+    uint32 OrderID = 1;
+}
+
+message GetOrderResponse {
+    uint32 CustomerID = 1;
+    repeated ArticleWithAmount ArticleList= 2;
+    bool Paid = 3;
+    bool Shipped = 4;
+}
+
+//Payment----------------------------------------------------------------------------
+service Payment {
+    rpc ReceivePayment(PaymentRequest) returns (PaymentResponse) {}
+}
+
+message PaymentRequest {
+   uint32 OrderID = 1;
+}
+
+message PaymentResponse {}
+
+
+//Shipment---------------------------------------------------------------------------
+service Shipment {
+
+}
+
+//Event------------------------------------------------------------------------------
+
+message Event {
+	// unique id
+	string ID = 1;
+	// unix timestamp
+	int64 Timestamp = 2;
+	// message
+	string Message = 3;
+}
